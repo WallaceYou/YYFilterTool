@@ -1,17 +1,16 @@
 //
-//  YYFilterView.m
-//  MyCoinRisk
+//  YYFilterTool.m
+//  YYFilterTool
 //
 //  Created by yuyou on 2018/7/28.
 //  Copyright © 2018年 hengtiansoft. All rights reserved.
 //
 
-#import "YYFilterView.h"
+#import "YYFilterTool.h"
 #import "TopConditionCollectionView.h"
 #import "ConditionListCell.h"
 #import "ConditionListModel.h"
 #import "YYFilterToolMacro.h"
-
 
 #define StartYDefault           -1000
 #define FirstLevelScale         0.35//如果是两层筛选，则第一层的tableView的宽度占总宽度的比例
@@ -21,16 +20,19 @@
 #define AnimationDuration       .25
 
 
-@interface YYFilterView () <UITableViewDelegate, UITableViewDataSource>
+@interface YYFilterTool () <UITableViewDelegate, UITableViewDataSource>
 
 /* startY表示筛选视图相对于window的Y值是多少，即从Y轴的哪个位置开始 */
 @property (nonatomic, assign) CGFloat startY;
 
-/* 表示是否是弹出状态，防止多次快速的点击 */
-@property (nonatomic, assign) BOOL isPoping;
+/* 顶部透明的点击可以收起筛选视图的背景 */
+@property (nonatomic, strong) UIButton *topBgClearButton;
 
 /* 点击可以收起筛选视图的黑色背景视图 */
 @property (nonatomic, strong) UIButton *shadowBgButton;
+
+
+@property (nonatomic, strong) UIView *filterView;
 
 /* 头部的条件框collectionView */
 @property (nonatomic, strong) TopConditionCollectionView *topConditionCollectionView;
@@ -52,7 +54,7 @@
 
 @end
 
-@implementation YYFilterView {
+@implementation YYFilterTool {
     
     BOOL _allowTopCondition;
 }
@@ -60,22 +62,18 @@
 
 #pragma mark - Init
 
-- (BOOL)getIfPoping {
-    return self.isPoping;
-}
-
-- (instancetype)initWithFrame:(CGRect)frame {
-    if (self = [super initWithFrame:frame]) {
+- (instancetype)init {
+    if (self = [super init]) {
         self.startY = StartYDefault;//默认的开始位置
-        self.isPoping = NO;
-        self.levelType = YYFilterViewTypeSingleLevel;//默认一层
+        self.levelType = YYFilterToolTypeSingleLevel;//默认一层
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(topFilterDeleteBtnClick:) name:@"FilterViewTopCollectionDeleteBtnClick" object:nil];
         
-        [self setSubviews];
     }
+    
     return self;
 }
+
 
 - (void)dealloc {
     NSLog(@"筛选视图已销毁");
@@ -83,7 +81,25 @@
 }
 
 #pragma mark - Privite Func
-- (void)setSubviews {
+- (void)initFilterViews {
+    
+    
+    UIView *kWindow = [UIApplication sharedApplication].delegate.window;
+    
+    
+    _topBgClearButton = [UIButton new];
+    _topBgClearButton.backgroundColor = [UIColor clearColor];
+    [_topBgClearButton addTarget:self action:@selector(shadowBgButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    [kWindow addSubview:_topBgClearButton];
+    
+    
+    _shadowBgButton = [UIButton new];
+    _shadowBgButton.backgroundColor = [UIColor blackColor];
+    [_shadowBgButton addTarget:self action:@selector(shadowBgButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    [kWindow addSubview:_shadowBgButton];
+    
+    _filterView = [UIView new];
+    [kWindow addSubview:_filterView];
     
     //顶部已经筛选的条件
     UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
@@ -92,23 +108,23 @@
     _topConditionCollectionView = [[TopConditionCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
     _topConditionCollectionView.backgroundColor = [UIColor whiteColor];
     _topConditionCollectionView.showsHorizontalScrollIndicator = NO;
-    [self addSubview:_topConditionCollectionView];
+    [_filterView addSubview:_topConditionCollectionView];
     
     //顶部已筛选的条件下方的那根线
     _lineView = [UIView new];
     _lineView.backgroundColor = BgGreyColor;
-    [self addSubview:_lineView];
-
-
+    [_filterView addSubview:_lineView];
+    
+    
     //底部确定按钮
-//    _confirmBtn = [UIButton buttonWithTitle:@"完成" titleColor:WhiteColor textFont:FONT_SystemFontSize(FONT_SIZE_TITLE) buttonBgColor:BrightBlueColor];
+    //    _confirmBtn = [UIButton buttonWithTitle:@"完成" titleColor:WhiteColor textFont:FONT_SystemFontSize(FONT_SIZE_TITLE) buttonBgColor:BrightBlueColor];
     _confirmBtn = [UIButton new];
     [_confirmBtn setTitle:@"完成" forState:UIControlStateNormal];
     [_confirmBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _confirmBtn.titleLabel.font = [UIFont systemFontOfSize:18];
     [_confirmBtn setBackgroundImage:[self createImageWithColor:BrightBlueColor] forState:UIControlStateNormal];
     [_confirmBtn addTarget:self action:@selector(confirmBtnClick) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:_confirmBtn];
+    [_filterView addSubview:_confirmBtn];
     
     //一级条件
     _firstLevelTableView = [UITableView new];
@@ -117,7 +133,7 @@
     _firstLevelTableView.backgroundColor = BgGreyColor;
     _firstLevelTableView.tableFooterView = [UIView new];
     [_firstLevelTableView registerClass:[ConditionListCell class] forCellReuseIdentifier:@"ConditionListCell"];
-    [self addSubview:_firstLevelTableView];
+    [_filterView addSubview:_firstLevelTableView];
     
     //二级条件
     _secondLevelTableView = [UITableView new];
@@ -125,7 +141,7 @@
     _secondLevelTableView.dataSource = self;
     _secondLevelTableView.tableFooterView = [UIView new];
     [_secondLevelTableView registerClass:[ConditionListCell class] forCellReuseIdentifier:@"ConditionListCell"];
-    [self addSubview:_secondLevelTableView];
+    [_filterView addSubview:_secondLevelTableView];
 }
 
 
@@ -169,15 +185,11 @@
 /* 开始动画，弹出筛选视图，startY表示筛选视图相对于window的Y值是多少，即从Y轴的哪个位置开始 */
 - (void)popFilterViewWithStartY:(CGFloat)startY completion:(void(^)(void))completion {
     
+    [self initFilterViews];
+    
     if (self == nil) {
         return;
     }
-    if (self.isPoping == YES) {
-        [self closeFilterViewCompletion:nil];
-        return;
-    }
-    
-    self.isPoping = YES;
     
     self.startY = startY;
     
@@ -188,74 +200,67 @@
     //计算confirmBtn的高度
     CGFloat confirmBtnHeight = self.multiSelectionEnable?TopAndBottomHeight:0;
     _confirmBtn.hidden = !self.multiSelectionEnable;
-
+    
     //计算得到数量最多的一个数组有几个元素
     NSInteger maxElement = 0;
-
+    
     for (NSArray *secondElements in self.secondLevelElements) {//先比较第二层
         if (secondElements.count > maxElement) {
             maxElement = secondElements.count;
         }
     }
-
+    
     if (self.firstLevelElements.count > maxElement) {//再比较第一层
         maxElement = self.firstLevelElements.count;
     }
-
+    
     if (maxElement > MaxTableViewCellCount) {//最多只能有七行，即最多350高
         maxElement = MaxTableViewCellCount;
     }
-
+    
     //计算tableView的高度和宽度
     CGFloat tableViewHeight = TabelViewCellHeight*maxElement;
-
-    CGFloat firstTableWidth = kWindowW*(self.levelType==YYFilterViewTypeSingleLevel?1:FirstLevelScale);
-    CGFloat secondTableWidth = kWindowW*(self.levelType==YYFilterViewTypeSingleLevel?0:(1-FirstLevelScale));
-
+    
+    CGFloat firstTableWidth = kWindowW*(self.levelType==YYFilterToolTypeSingleLevel?1:FirstLevelScale);
+    CGFloat secondTableWidth = kWindowW*(self.levelType==YYFilterToolTypeSingleLevel?0:(1-FirstLevelScale));
+    
     //计算self的高度
     CGFloat popViewHeight = topColletionHeight+tableViewHeight+confirmBtnHeight;
     
     
     //先确定视图的开始位置
-    self.frame = CGRectMake(0, startY, kWindowW, 0);
+    self.topBgClearButton.frame = CGRectMake(0, 0, kWindowW, startY);
+    self.filterView.frame = CGRectMake(0, startY, kWindowW, 0);
     self.topConditionCollectionView.frame = CGRectMake(0, 0, kWindowW, 0);
     self.lineView.frame = CGRectMake(0, 0, kWindowW, 0);
     self.firstLevelTableView.frame = CGRectMake(0, 0, firstTableWidth, 0);;
     self.secondLevelTableView.frame = CGRectMake(firstTableWidth, 0, secondTableWidth, 0);
     self.confirmBtn.frame = CGRectMake(0, 0, kWindowW, 0);
     
-    UIView *kWindow = [UIApplication sharedApplication].delegate.window;
-    [kWindow addSubview:self];
-    
-    self.shadowBgButton = [UIButton new];
-    self.shadowBgButton.backgroundColor = [UIColor blackColor];
     self.shadowBgButton.frame = CGRectMake(0, startY, kWindowW, kWindowH - startY);
     self.shadowBgButton.alpha = 0.0;
-    [self.shadowBgButton addTarget:self action:@selector(shadowBgButtonClick) forControlEvents:UIControlEventTouchUpInside];
-    [kWindow insertSubview:self.shadowBgButton belowSubview:self];
-    
     
     //如果是多于一层的筛选，则将第一层的第一个cell的颜色置为白色（即默认已经选中了第一个）
-//    if (self.levelType != YYFilterViewTypeSingleLevel) {
-//        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-//        [self tableView:self.firstLevelTableView didSelectRowAtIndexPath:indexPath];
-//    }
+    //    if (self.levelType != YYFilterToolTypeSingleLevel) {
+    //        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    //        [self tableView:self.firstLevelTableView didSelectRowAtIndexPath:indexPath];
+    //    }
     
     //两层则没有分割线，一层则有
-    _firstLevelTableView.separatorStyle = self.levelType == YYFilterViewTypeSingleLevel?UITableViewCellSeparatorStyleSingleLine:UITableViewCellSeparatorStyleNone;
+    _firstLevelTableView.separatorStyle = self.levelType == YYFilterToolTypeSingleLevel?UITableViewCellSeparatorStyleSingleLine:UITableViewCellSeparatorStyleNone;
     
     //出现的动画
     [UIView animateWithDuration:AnimationDuration animations:^{
-
-        self.frame = CGRectMake(0, startY, kWindowW, popViewHeight);
+        
+        self.filterView.frame = CGRectMake(0, startY, kWindowW, popViewHeight);
         self.topConditionCollectionView.frame = CGRectMake(0, 0, kWindowW, topColletionHeight);
         self.lineView.frame = CGRectMake(0, TopAndBottomHeight-1, kWindowW, 1);
         self.firstLevelTableView.frame = CGRectMake(0, topColletionHeight, firstTableWidth, tableViewHeight);
         self.secondLevelTableView.frame = CGRectMake(firstTableWidth, topColletionHeight, secondTableWidth, tableViewHeight);
         self.confirmBtn.frame = CGRectMake(0, topColletionHeight+tableViewHeight, kWindowW, confirmBtnHeight);
-
+        
         self.shadowBgButton.alpha = 0.8;
-
+        
     } completion:^(BOOL finished) {
         
         if (completion) {
@@ -275,8 +280,8 @@
     }
     
     //计算tableView的宽度
-    CGFloat firstTableWidth = kWindowW*(self.levelType==YYFilterViewTypeSingleLevel?1:FirstLevelScale);
-    CGFloat secondTableWidth = kWindowW*(self.levelType==YYFilterViewTypeSingleLevel?0:(1-FirstLevelScale));
+    CGFloat firstTableWidth = kWindowW*(self.levelType==YYFilterToolTypeSingleLevel?1:FirstLevelScale);
+    CGFloat secondTableWidth = kWindowW*(self.levelType==YYFilterToolTypeSingleLevel?0:(1-FirstLevelScale));
     
     //消失的动画
     [UIView animateWithDuration:AnimationDuration animations:^{
@@ -287,19 +292,22 @@
         self.firstLevelTableView.frame = CGRectMake(0, 0, firstTableWidth, 0);
         self.secondLevelTableView.frame = CGRectMake(firstTableWidth, 0, secondTableWidth, 0);
         self.confirmBtn.frame = CGRectMake(0, 0, kWindowW, 0);
-        self.frame = CGRectMake(0, self.startY, kWindowW, 0);
+        self.filterView.frame = CGRectMake(0, self.startY, kWindowW, 0);
         
         self.shadowBgButton.alpha = 0.0;
     } completion:^(BOOL finished) {
-        if (self.superview) {
-            [self removeFromSuperview];
+        if (self.filterView.superview) {
+            [self.filterView removeFromSuperview];
+        }
+        
+        if (self.topBgClearButton.subviews) {
+            [self.topBgClearButton removeFromSuperview];
         }
         
         if (self.shadowBgButton.superview) {
             [self.shadowBgButton removeFromSuperview];
         }
         
-        self.isPoping = NO;//表示动画已结束，此时才可以继续弹出动画
         
         if (completion) {
             completion();
@@ -318,24 +326,8 @@
     
     
     [self closeFilterViewCompletion:^{
-        NSMutableArray *conditions = [NSMutableArray new];
-        
-        for (FilterSelectIndexModel *indexModel in self.currentConditions) {
-            
-            FilterSelectIndexModel *model = indexModel;
-            if (model.subIndex != nil) {
-                while (1) {
-                    model = model.subIndex;
-                    if (model.subIndex == nil) {
-                        break;
-                    }
-                }
-            }
-            [conditions addObject:model.filterName];
-        }
         
         if (self.filterComplete) {
-//            self.filterComplete(conditions);
             self.filterComplete(self.currentConditions);
         }
     }];
@@ -351,7 +343,7 @@
     NSIndexPath *indexPath = [self.topConditionCollectionView indexPathForCell:cell];
     
     if (indexPath.row >= self.currentConditions.count) {
-//        [MBProgressHUD showMessage:@"越界"];
+        //        [MBProgressHUD showMessage:@"越界"];
         return;
     }
     
@@ -419,17 +411,17 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-
+    
     ConditionListCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ConditionListCell"];
-
+    
     ConditionListModel *model = [ConditionListModel new];
     model.selectedBtnHighlightedName = self.selectedBtnHighlightedName;
     model.selectedBtnNormalName = self.selectedBtnNormalName;
-
+    
     if (tableView == self.firstLevelTableView) {//如果是第一层tableView
-
-        if (self.levelType == YYFilterViewTypeSingleLevel) {//如果是一层筛选
-
+        
+        if (self.levelType == YYFilterToolTypeSingleLevel) {//如果是一层筛选
+            
             model.levelType = 2;
             model.conditionName = [self.firstLevelElements objectAtIndex:indexPath.row];
             
@@ -438,7 +430,7 @@
                     model.boxSelected = YES;
                 }
             }
-
+            
         } else {//两层筛选
             model.levelType = 1;
             model.conditionName = [self.firstLevelElements objectAtIndex:indexPath.row];
@@ -457,18 +449,18 @@
             model.indexNumber = indexNumber;
             
         }
-
+        
     } else {//第二层tableView，则一定是两层筛选
-
+        
         model.levelType = 2;
-
+        
         NSArray *secondElements = [self.secondLevelElements objectAtIndex:self.indexModel.index];
         if ([secondElements isKindOfClass:[NSArray class]]) {
             model.conditionName = [secondElements objectAtIndex:indexPath.row];
         } else {
             model.conditionName = @"";
         }
-
+        
         for (FilterSelectIndexModel *indexModel in self.currentConditions) {
             if (indexModel.index == self.indexModel.index && indexModel.subIndex.index == indexPath.row) {
                 model.boxSelected = YES;
@@ -484,7 +476,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.firstLevelTableView) {//如果是点击的是第一层tableView
         
-        if (self.levelType == YYFilterViewTypeSingleLevel) {//如果是一层筛选
+        if (self.levelType == YYFilterToolTypeSingleLevel) {//如果是一层筛选
             
             if (self.multiSelectionEnable) {
                 
@@ -532,7 +524,7 @@
             }
             
             
-        } else if (self.levelType == YYFilterViewTypeDoubleLevel) {//如果是两层筛选
+        } else if (self.levelType == YYFilterToolTypeDoubleLevel) {//如果是两层筛选
             
             //先得到上一个点击的cell，并将背景色置为灰色
             UITableViewCell *lastCell = [self.firstLevelTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexModel.index inSection:0]];
@@ -594,7 +586,7 @@
                 self.topConditionCollectionView.conditions = self.currentConditions;
                 
                 [self.secondLevelTableView reloadData];
-                [self.firstLevelTableView reloadData];;
+                [self.firstLevelTableView reloadData];
             }
             
             
@@ -642,7 +634,7 @@
         if (!self.multiSelectionEnable) {
             [self.currentConditions removeAllObjects];
         }
-
+        
         [self.currentConditions addObject:firstModel];
         
         //将当前条件再赋值给头部当前条件collectionView中，刷新collectionView的显示

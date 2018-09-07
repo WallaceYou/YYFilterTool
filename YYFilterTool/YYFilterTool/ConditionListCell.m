@@ -7,7 +7,7 @@
 //
 
 #import "ConditionListCell.h"
-#import "YYFilterViewMacro.h"
+#import "YYFilterToolMacro.h"
 #import "ConditionListModel.h"
 #import "Masonry.h"
 

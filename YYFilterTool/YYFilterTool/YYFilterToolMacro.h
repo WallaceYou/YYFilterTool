@@ -1,13 +1,13 @@
 //
-//  YYFilterViewMacro.h
+//  YYFilterToolMacro.h
 //  MyCoinRisk
 //
 //  Created by yuyou on 2018/7/30.
 //  Copyright © 2018年 hengtiansoft. All rights reserved.
 //
 
-#ifndef YYFilterViewMacro_h
-#define YYFilterViewMacro_h
+#ifndef YYFilterToolMacro_h
+#define YYFilterToolMacro_h
 
 /* 屏幕尺寸相关 */
 #define kWindowH                [UIScreen mainScreen].bounds.size.height
@@ -27,4 +27,4 @@
 
 #define LightBlackColor         UIColorFromRGB16(0x333333)
 
-#endif /* YYFilterViewMacro_h */
+#endif /* YYFilterToolMacro_h */

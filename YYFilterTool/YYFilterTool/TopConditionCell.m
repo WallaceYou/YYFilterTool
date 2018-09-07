@@ -7,7 +7,7 @@
 //
 
 #import "TopConditionCell.h"
-#import "YYFilterViewMacro.h"
+#import "YYFilterToolMacro.h"
 #import "Masonry.h"
 #import "ExtensionButton.h"
 

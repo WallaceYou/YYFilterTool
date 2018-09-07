@@ -39,6 +39,7 @@
 		BCC3810E2142655E0069E76E /* select_square_grey@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCC381052142655E0069E76E /* select_square_grey@2x.png */; };
 		BCC3810F2142655E0069E76E /* select_square_bright.png in Resources */ = {isa = PBXBuildFile; fileRef = BCC381062142655E0069E76E /* select_square_bright.png */; };
 		BCC381102142655E0069E76E /* small_remove@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCC381072142655E0069E76E /* small_remove@2x.png */; };
+		BCC3811321426D630069E76E /* YYFilterTool.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC3811221426D630069E76E /* YYFilterTool.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,7 +59,7 @@
 		BCC380C7214253020069E76E /* TopConditionCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopConditionCollectionView.m; sourceTree = "<group>"; };
 		BCC380C8214253020069E76E /* YYFilterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYFilterView.m; sourceTree = "<group>"; };
 		BCC380C9214253020069E76E /* FilterSelectIndexModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilterSelectIndexModel.m; sourceTree = "<group>"; };
-		BCC380CA214253020069E76E /* YYFilterViewMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYFilterViewMacro.h; sourceTree = "<group>"; };
+		BCC380CA214253020069E76E /* YYFilterToolMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYFilterToolMacro.h; sourceTree = "<group>"; };
 		BCC380CB214253020069E76E /* ConditionListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConditionListCell.h; sourceTree = "<group>"; };
 		BCC380CC214253020069E76E /* TopConditionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopConditionCell.m; sourceTree = "<group>"; };
 		BCC380CD214253020069E76E /* ConditionListModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConditionListModel.m; sourceTree = "<group>"; };
@@ -101,6 +102,8 @@
 		BCC381052142655E0069E76E /* select_square_grey@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "select_square_grey@2x.png"; sourceTree = "<group>"; };
 		BCC381062142655E0069E76E /* select_square_bright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = select_square_bright.png; sourceTree = "<group>"; };
 		BCC381072142655E0069E76E /* small_remove@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "small_remove@2x.png"; sourceTree = "<group>"; };
+		BCC3811121426D630069E76E /* YYFilterTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YYFilterTool.h; sourceTree = "<group>"; };
+		BCC3811221426D630069E76E /* YYFilterTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YYFilterTool.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,9 +155,11 @@
 			isa = PBXGroup;
 			children = (
 				BCC380FE2142655E0069E76E /* resource */,
-				BCC380CA214253020069E76E /* YYFilterViewMacro.h */,
+				BCC380CA214253020069E76E /* YYFilterToolMacro.h */,
 				BCC380D0214253020069E76E /* YYFilterView.h */,
 				BCC380C8214253020069E76E /* YYFilterView.m */,
+				BCC3811121426D630069E76E /* YYFilterTool.h */,
+				BCC3811221426D630069E76E /* YYFilterTool.m */,
 				BCC380CE214253020069E76E /* TopConditionCollectionView.h */,
 				BCC380C7214253020069E76E /* TopConditionCollectionView.m */,
 				BCC380C4214253020069E76E /* TopConditionCell.h */,
@@ -305,6 +310,7 @@
 				BCC380F7214253970069E76E /* View+MASAdditions.m in Sources */,
 				BCC380F1214253970069E76E /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
 				BCC380F3214253970069E76E /* MASCompositeConstraint.m in Sources */,
+				BCC3811321426D630069E76E /* YYFilterTool.m in Sources */,
 				BCC380D4214253020069E76E /* FilterSelectIndexModel.m in Sources */,
 				BCC380F2214253970069E76E /* ViewController+MASAdditions.m in Sources */,
 				BCC380FA214253970069E76E /* MASViewAttribute.m in Sources */,
