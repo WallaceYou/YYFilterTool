@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B20942D2143E74E00D07B7B /* YYFilterTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B20942C2143E74E00D07B7B /* YYFilterTool.m */; };
 		BCC380AF214252650069E76E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC380AE214252650069E76E /* AppDelegate.m */; };
 		BCC380B2214252650069E76E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC380B1214252650069E76E /* ViewController.m */; };
 		BCC380B5214252650069E76E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BCC380B3214252650069E76E /* Main.storyboard */; };
@@ -39,10 +40,12 @@
 		BCC3810E2142655E0069E76E /* select_square_grey@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCC381052142655E0069E76E /* select_square_grey@2x.png */; };
 		BCC3810F2142655E0069E76E /* select_square_bright.png in Resources */ = {isa = PBXBuildFile; fileRef = BCC381062142655E0069E76E /* select_square_bright.png */; };
 		BCC381102142655E0069E76E /* small_remove@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCC381072142655E0069E76E /* small_remove@2x.png */; };
-		BCC3811321426D630069E76E /* YYFilterTool.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC3811221426D630069E76E /* YYFilterTool.m */; };
+		BCC3811321426D630069E76E /* YYBaseFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC3811221426D630069E76E /* YYBaseFilter.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1B20942B2143E74E00D07B7B /* YYFilterTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YYFilterTool.h; sourceTree = "<group>"; };
+		1B20942C2143E74E00D07B7B /* YYFilterTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YYFilterTool.m; sourceTree = "<group>"; };
 		BCC380AA214252650069E76E /* YYFilterTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YYFilterTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCC380AD214252650069E76E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		BCC380AE214252650069E76E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -102,8 +105,8 @@
 		BCC381052142655E0069E76E /* select_square_grey@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "select_square_grey@2x.png"; sourceTree = "<group>"; };
 		BCC381062142655E0069E76E /* select_square_bright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = select_square_bright.png; sourceTree = "<group>"; };
 		BCC381072142655E0069E76E /* small_remove@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "small_remove@2x.png"; sourceTree = "<group>"; };
-		BCC3811121426D630069E76E /* YYFilterTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YYFilterTool.h; sourceTree = "<group>"; };
-		BCC3811221426D630069E76E /* YYFilterTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YYFilterTool.m; sourceTree = "<group>"; };
+		BCC3811121426D630069E76E /* YYBaseFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YYBaseFilter.h; sourceTree = "<group>"; };
+		BCC3811221426D630069E76E /* YYBaseFilter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YYBaseFilter.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,8 +161,10 @@
 				BCC380CA214253020069E76E /* YYFilterToolMacro.h */,
 				BCC380D0214253020069E76E /* YYFilterView.h */,
 				BCC380C8214253020069E76E /* YYFilterView.m */,
-				BCC3811121426D630069E76E /* YYFilterTool.h */,
-				BCC3811221426D630069E76E /* YYFilterTool.m */,
+				1B20942B2143E74E00D07B7B /* YYFilterTool.h */,
+				1B20942C2143E74E00D07B7B /* YYFilterTool.m */,
+				BCC3811121426D630069E76E /* YYBaseFilter.h */,
+				BCC3811221426D630069E76E /* YYBaseFilter.m */,
 				BCC380CE214253020069E76E /* TopConditionCollectionView.h */,
 				BCC380C7214253020069E76E /* TopConditionCollectionView.m */,
 				BCC380C4214253020069E76E /* TopConditionCell.h */,
@@ -310,12 +315,13 @@
 				BCC380F7214253970069E76E /* View+MASAdditions.m in Sources */,
 				BCC380F1214253970069E76E /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
 				BCC380F3214253970069E76E /* MASCompositeConstraint.m in Sources */,
-				BCC3811321426D630069E76E /* YYFilterTool.m in Sources */,
+				BCC3811321426D630069E76E /* YYBaseFilter.m in Sources */,
 				BCC380D4214253020069E76E /* FilterSelectIndexModel.m in Sources */,
 				BCC380F2214253970069E76E /* ViewController+MASAdditions.m in Sources */,
 				BCC380FA214253970069E76E /* MASViewAttribute.m in Sources */,
 				BCC380F9214253970069E76E /* MASViewConstraint.m in Sources */,
 				BCC380D6214253020069E76E /* ConditionListModel.m in Sources */,
+				1B20942D2143E74E00D07B7B /* YYFilterTool.m in Sources */,
 				BCC380F4214253970069E76E /* MASConstraintMaker.m in Sources */,
 				BCC380D1214253020069E76E /* ConditionListCell.m in Sources */,
 				BCC380F5214253970069E76E /* MASLayoutConstraint.m in Sources */,
