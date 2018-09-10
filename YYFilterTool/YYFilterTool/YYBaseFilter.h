@@ -9,11 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "FilterSelectIndexModel.h"
+#import "YYFilterToolMacro.h"
 
-typedef NS_ENUM(NSUInteger, YYBaseFilterType) {
-    YYBaseFilterTypeSingleLevel = 1,
-    YYBaseFilterTypeDoubleLevel = 2,
-};
+
 
 @interface YYBaseFilter : NSObject
 

@@ -9,6 +9,11 @@
 #ifndef YYFilterToolMacro_h
 #define YYFilterToolMacro_h
 
+typedef NS_ENUM(NSUInteger, YYBaseFilterType) {
+    YYBaseFilterTypeSingleLevel = 1,
+    YYBaseFilterTypeDoubleLevel = 2,
+};
+
 /* 屏幕尺寸相关 */
 #define kWindowH                [UIScreen mainScreen].bounds.size.height
 #define kWindowW                [UIScreen mainScreen].bounds.size.width

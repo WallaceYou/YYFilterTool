@@ -10,7 +10,6 @@
 #import "TopConditionCollectionView.h"
 #import "ConditionListCell.h"
 #import "ConditionListModel.h"
-#import "YYFilterToolMacro.h"
 
 #define StartYDefault           -1000
 #define FirstLevelScale         0.35//如果是两层筛选，则第一层的tableView的宽度占总宽度的比例
