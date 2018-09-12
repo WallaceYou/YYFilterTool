@@ -13,6 +13,11 @@
 
 @interface YYFilterTool : NSObject
 
+/**
+ *  @discussion YYFilterTool这个类只是将baseFilter又进行了一次封装，提供一个单例对象，外界每次给单例对象中属性的赋值，其实只是给单例对象中baseFilter的赋值，而单例对象中的属性永远为nil，而每次视图关闭后，baseFilter都被销毁了，不会造成单例对象中的某一属性一直引用堆中对象。这样就可以做到项目中的所有地方用到的筛选视图，都只使用这一个单例对象即可，每次pop出不同类型的筛选视图，只需赋值不同的属性，然后再pop
+ *
+ */
+
 /** 筛选层级，一层还是两层，目前支持两层，以后有需求可以拓展到三层 */
 @property (nonatomic, assign) NSInteger levelType;
 
@@ -40,7 +45,10 @@
 /** 点击筛选后的回调 */
 @property (nonatomic, copy) void(^filterComplete)(NSArray *filters);
 
-/** 开始动画，弹出筛选视图，startY表示筛选视图相对于window的Y值是多少，即从Y轴的哪个位置开始 */
-+ (void)popFilterViewWithStartY:(CGFloat)startY completion:(void(^)(void))completion;
+/** 开始动画，弹出筛选视图，startY表示筛选视图相对于window的Y值是多少，即从Y轴的哪个位置开始，另外两个回调分别是视图展开动画完成后的回调，视图关闭动画完成后的回调 */
+- (void)popFilterViewWithStartY:(CGFloat)startY startAnimateComplete:(void(^)(void))startAnimateComplete closeAnimateComplete:(void(^)(void))closeAnimateComplete;
+
+/** 单例对象 */
++ (instancetype)shareInstance;
 
 @end

@@ -43,8 +43,8 @@
 @property (nonatomic, copy) void(^filterComplete)(NSArray *filters);
 
 
-/** 开始动画，弹出筛选视图，startY表示筛选视图相对于window的Y值是多少，即从Y轴的哪个位置开始 */
-- (void)popFilterViewWithStartY:(CGFloat)startY completion:(void(^)(void))completion;
+/** 开始动画，弹出筛选视图，startY表示筛选视图相对于window的Y值是多少，即从Y轴的哪个位置开始，另外两个回调分别是视图展开动画完成后的回调，视图关闭动画完成后的回调 */
+- (void)popFilterViewWithStartY:(CGFloat)startY startAnimateComplete:(void(^)(void))startAnimateComplete closeAnimateComplete:(void(^)(void))closeAnimateComplete;
 
 /** 关闭筛选视图 */
 - (void)closeFilterViewCompletion:(void(^)(void))completion;

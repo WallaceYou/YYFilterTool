@@ -16,8 +16,6 @@
 @end
 
 
-
-
 @implementation YYFilterTool
 
 - (void)setLevelType:(NSInteger)levelType {
@@ -41,19 +39,19 @@
 }
 
 - (void)setCurrentConditions:(NSMutableArray<FilterSelectIndexModel *> *)currentConditions {
-    self.currentConditions = currentConditions;
+    self.baseFilter.currentConditions = currentConditions;
 }
 
 - (void)setSelectedBtnHighlightedName:(NSString *)selectedBtnHighlightedName {
-    self.selectedBtnHighlightedName = selectedBtnHighlightedName;
+    self.baseFilter.selectedBtnHighlightedName = selectedBtnHighlightedName;
 }
 
 - (void)setSelectedBtnNormalName:(NSString *)selectedBtnNormalName {
-    self.selectedBtnNormalName = selectedBtnNormalName;
+    self.baseFilter.selectedBtnNormalName = selectedBtnNormalName;
 }
 
 - (void)setFilterComplete:(void (^)(NSArray *))filterComplete {
-    self.filterComplete = filterComplete;
+    self.baseFilter.filterComplete = filterComplete;
 }
 
 
@@ -67,10 +65,12 @@
     return tool;
 }
 
-+ (void)popFilterViewWithStartY:(CGFloat)startY completion:(void (^)(void))completion {
+- (void)popFilterViewWithStartY:(CGFloat)startY startAnimateComplete:(void (^)(void))startAnimateComplete closeAnimateComplete:(void (^)(void))closeAnimateComplete {
     
-    YYFilterTool *tool = [self shareInstance];
-    [tool.baseFilter popFilterViewWithStartY:startY completion:completion];
+    [self.baseFilter popFilterViewWithStartY:startY startAnimateComplete:startAnimateComplete closeAnimateComplete:^{
+        closeAnimateComplete();
+        self.baseFilter = nil;
+    }];
     
 }
 

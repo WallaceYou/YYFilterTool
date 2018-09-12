@@ -7,13 +7,13 @@
 //
 
 #import "ViewController.h"
-#import "YYBaseFilter.h"
+#import "YYFilterTool.h"
 
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UIButton *button;
 
-@property (nonatomic, strong) YYBaseFilter *filterTool;
+@property (nonatomic, strong) YYFilterTool *filterTool;//永远返回一个单例对象
 
 
 @end
@@ -25,18 +25,55 @@
     self.view.backgroundColor = [UIColor greenColor];
 }
 
-- (IBAction)buttonClick:(id)sender {
-    [self.filterTool popFilterViewWithStartY:150 completion:nil];
+- (IBAction)nearbyBtnClick:(id)sender {
+    
+    NSMutableArray *firstLevelElements = [NSMutableArray new];
+    NSMutableArray *secondLevelElements = [NSMutableArray new];
+    
+    for (int i = 0; i < 30; i++) {
+        [firstLevelElements addObject:[NSString stringWithFormat:@"市%i",i]];
+        NSMutableArray *elements = [NSMutableArray new];
+        for (int j = 0; j < random()%30+1; j++) {
+            [elements addObject:[NSString stringWithFormat:@"市%i县%i",i,j]];
+        }
+        [secondLevelElements addObject:elements];
+    }
+    
+    self.filterTool.firstLevelElements = firstLevelElements;
+    self.filterTool.secondLevelElements = secondLevelElements;
+    self.filterTool.levelType = YYBaseFilterTypeDoubleLevel;
+    self.filterTool.multiSelectionEnable = YES;
+    self.filterTool.topConditionEnable = YES;
+    
+    self.filterTool.filterComplete = ^(NSArray *filters) {
+        NSLog(@"%@",filters);
+    };
+    
+    [self.filterTool popFilterViewWithStartY:150 startAnimateComplete:nil closeAnimateComplete:^{
+        NSLog(@"hehe");
+    }];
+    
 }
 
-- (YYBaseFilter *)filterTool {
+- (IBAction)sortbyBtnClick:(id)sender {
+    
+    self.filterTool.firstLevelElements = @[@"智能排序",@"离我最近",@"好评优先",@"人气最高"];
+//    self.filterTool.multiSelectionEnable = YES;
+    self.filterTool.topConditionEnable = YES;
+    
+    self.filterTool.filterComplete = ^(NSArray *filters) {
+        NSLog(@"%@",filters);
+    };
+    
+    [self.filterTool popFilterViewWithStartY:150 startAnimateComplete:nil closeAnimateComplete:^{
+        NSLog(@"hehe");
+    }];
+    
+}
+
+- (YYFilterTool *)filterTool {
     if (!_filterTool) {
-        _filterTool = [YYBaseFilter new];
-        _filterTool.firstLevelElements = @[@"呵呵",@"信息",@"单独",@"嗷嗷"];
-        _filterTool.secondLevelElements = @[@[@"呵呵",@"信息",@"单独",@"嗷嗷",@"呵呵",@"信息",@"单独",@"嗷嗷"],@[@"hh",@"若若",@"安安",@"圆圆",@"那你",@"慢慢",@"了解",@"好吧"],@[@"动画",@"点击",@"撒的",@"人家",@"发你",@"你是",@"大款",@"艾尔"]];
-        _filterTool.levelType = YYBaseFilterTypeDoubleLevel;
-        _filterTool.multiSelectionEnable = YES;
-        _filterTool.topConditionEnable = YES;
+        _filterTool = [YYFilterTool shareInstance];
     }
     return _filterTool;
 }

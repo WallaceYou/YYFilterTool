@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1B20942D2143E74E00D07B7B /* YYFilterTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B20942C2143E74E00D07B7B /* YYFilterTool.m */; };
+		BC5F05102148E5920037735B /* YYFilterTool.m in Sources */ = {isa = PBXBuildFile; fileRef = BC5F050F2148E5920037735B /* YYFilterTool.m */; };
 		BCC380AF214252650069E76E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC380AE214252650069E76E /* AppDelegate.m */; };
 		BCC380B2214252650069E76E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC380B1214252650069E76E /* ViewController.m */; };
 		BCC380B5214252650069E76E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BCC380B3214252650069E76E /* Main.storyboard */; };
@@ -16,7 +16,6 @@
 		BCC380BD214252660069E76E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC380BC214252660069E76E /* main.m */; };
 		BCC380D1214253020069E76E /* ConditionListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC380C5214253020069E76E /* ConditionListCell.m */; };
 		BCC380D2214253020069E76E /* TopConditionCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC380C7214253020069E76E /* TopConditionCollectionView.m */; };
-		BCC380D3214253020069E76E /* YYFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC380C8214253020069E76E /* YYFilterView.m */; };
 		BCC380D4214253020069E76E /* FilterSelectIndexModel.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC380C9214253020069E76E /* FilterSelectIndexModel.m */; };
 		BCC380D5214253020069E76E /* TopConditionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC380CC214253020069E76E /* TopConditionCell.m */; };
 		BCC380D6214253020069E76E /* ConditionListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC380CD214253020069E76E /* ConditionListModel.m */; };
@@ -44,8 +43,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1B20942B2143E74E00D07B7B /* YYFilterTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YYFilterTool.h; sourceTree = "<group>"; };
-		1B20942C2143E74E00D07B7B /* YYFilterTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YYFilterTool.m; sourceTree = "<group>"; };
+		BC5F050E2148E5910037735B /* YYFilterTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYFilterTool.h; sourceTree = "<group>"; };
+		BC5F050F2148E5920037735B /* YYFilterTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYFilterTool.m; sourceTree = "<group>"; };
 		BCC380AA214252650069E76E /* YYFilterTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YYFilterTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCC380AD214252650069E76E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		BCC380AE214252650069E76E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -60,7 +59,6 @@
 		BCC380C5214253020069E76E /* ConditionListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConditionListCell.m; sourceTree = "<group>"; };
 		BCC380C6214253020069E76E /* ConditionListModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConditionListModel.h; sourceTree = "<group>"; };
 		BCC380C7214253020069E76E /* TopConditionCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopConditionCollectionView.m; sourceTree = "<group>"; };
-		BCC380C8214253020069E76E /* YYFilterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYFilterView.m; sourceTree = "<group>"; };
 		BCC380C9214253020069E76E /* FilterSelectIndexModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilterSelectIndexModel.m; sourceTree = "<group>"; };
 		BCC380CA214253020069E76E /* YYFilterToolMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYFilterToolMacro.h; sourceTree = "<group>"; };
 		BCC380CB214253020069E76E /* ConditionListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConditionListCell.h; sourceTree = "<group>"; };
@@ -68,7 +66,6 @@
 		BCC380CD214253020069E76E /* ConditionListModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConditionListModel.m; sourceTree = "<group>"; };
 		BCC380CE214253020069E76E /* TopConditionCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopConditionCollectionView.h; sourceTree = "<group>"; };
 		BCC380CF214253020069E76E /* FilterSelectIndexModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterSelectIndexModel.h; sourceTree = "<group>"; };
-		BCC380D0214253020069E76E /* YYFilterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYFilterView.h; sourceTree = "<group>"; };
 		BCC380D8214253960069E76E /* MASCompositeConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASCompositeConstraint.h; sourceTree = "<group>"; };
 		BCC380D9214253960069E76E /* NSLayoutConstraint+MASDebugAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSLayoutConstraint+MASDebugAdditions.m"; sourceTree = "<group>"; };
 		BCC380DA214253960069E76E /* MASConstraint+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MASConstraint+Private.h"; sourceTree = "<group>"; };
@@ -159,10 +156,8 @@
 			children = (
 				BCC380FE2142655E0069E76E /* resource */,
 				BCC380CA214253020069E76E /* YYFilterToolMacro.h */,
-				BCC380D0214253020069E76E /* YYFilterView.h */,
-				BCC380C8214253020069E76E /* YYFilterView.m */,
-				1B20942B2143E74E00D07B7B /* YYFilterTool.h */,
-				1B20942C2143E74E00D07B7B /* YYFilterTool.m */,
+				BC5F050E2148E5910037735B /* YYFilterTool.h */,
+				BC5F050F2148E5920037735B /* YYFilterTool.m */,
 				BCC3811121426D630069E76E /* YYBaseFilter.h */,
 				BCC3811221426D630069E76E /* YYBaseFilter.m */,
 				BCC380CE214253020069E76E /* TopConditionCollectionView.h */,
@@ -308,7 +303,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BCC380D3214253020069E76E /* YYFilterView.m in Sources */,
 				BCC380D2214253020069E76E /* TopConditionCollectionView.m in Sources */,
 				BCC380F6214253970069E76E /* NSArray+MASAdditions.m in Sources */,
 				BCC380B2214252650069E76E /* ViewController.m in Sources */,
@@ -321,7 +315,7 @@
 				BCC380FA214253970069E76E /* MASViewAttribute.m in Sources */,
 				BCC380F9214253970069E76E /* MASViewConstraint.m in Sources */,
 				BCC380D6214253020069E76E /* ConditionListModel.m in Sources */,
-				1B20942D2143E74E00D07B7B /* YYFilterTool.m in Sources */,
+				BC5F05102148E5920037735B /* YYFilterTool.m in Sources */,
 				BCC380F4214253970069E76E /* MASConstraintMaker.m in Sources */,
 				BCC380D1214253020069E76E /* ConditionListCell.m in Sources */,
 				BCC380F5214253970069E76E /* MASLayoutConstraint.m in Sources */,

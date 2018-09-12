@@ -11,7 +11,6 @@
 #import "ConditionListCell.h"
 #import "ConditionListModel.h"
 
-#define StartYDefault           -1000
 #define FirstLevelScale         0.35//如果是两层筛选，则第一层的tableView的宽度占总宽度的比例
 #define TopAndBottomHeight      46//上面topConditionCollectionView的高度以及下面confirmBtn的高度
 #define TabelViewCellHeight     50//tableView的行高，无论第一层还是第二层
@@ -23,6 +22,9 @@
 
 /* startY表示筛选视图相对于window的Y值是多少，即从Y轴的哪个位置开始 */
 @property (nonatomic, assign) CGFloat startY;
+
+/* 表示是否正在进行筛选视图的打开动画，防止在弹出时快速的点击多次导致调用多次关闭动画完成后的回调 */
+@property (nonatomic, assign) BOOL ifCloseAnimating;
 
 /* 顶部透明的点击可以收起筛选视图的背景 */
 @property (nonatomic, strong) UIButton *topBgClearButton;
@@ -51,6 +53,9 @@
 /* 表示当前选择的索引 */
 @property (nonatomic, strong) FilterSelectIndexModel *indexModel;
 
+/* 表示关闭动画完成后的回调 */
+@property (nonatomic, copy) void(^closeAnimateComplete)(void);
+
 @end
 
 @implementation YYBaseFilter {
@@ -63,10 +68,9 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        self.startY = StartYDefault;//默认的开始位置
+        self.ifCloseAnimating = NO;//关闭动画还没有开始，所以默认已经是NO
         self.levelType = YYBaseFilterTypeSingleLevel;//默认一层
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(topFilterDeleteBtnClick:) name:@"FilterViewTopCollectionDeleteBtnClick" object:nil];
+        [self initFilterViews];
         
     }
     
@@ -76,7 +80,6 @@
 
 - (void)dealloc {
     NSLog(@"筛选视图已销毁");
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"FilterViewTopCollectionDeleteBtnClick" object:nil];
 }
 
 #pragma mark - Privite Func
@@ -181,14 +184,15 @@
 
 
 #pragma mark - Public Func
-/* 开始动画，弹出筛选视图，startY表示筛选视图相对于window的Y值是多少，即从Y轴的哪个位置开始 */
-- (void)popFilterViewWithStartY:(CGFloat)startY completion:(void(^)(void))completion {
-    
-    [self initFilterViews];
+/* 开始动画，弹出筛选视图，startY表示筛选视图相对于window的Y值是多少，即从Y轴的哪个位置开始，另外两个回调分别是视图展开动画完成后的回调，视图关闭动画完成后的回调 */
+- (void)popFilterViewWithStartY:(CGFloat)startY startAnimateComplete:(void (^)(void))startAnimateComplete closeAnimateComplete:(void (^)(void))closeAnimateComplete {
     
     if (self == nil) {
         return;
     }
+    
+    self.closeAnimateComplete = closeAnimateComplete;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(topFilterDeleteBtnClick:) name:@"FilterViewTopCollectionDeleteBtnClick" object:nil];
     
     self.startY = startY;
     
@@ -262,8 +266,8 @@
         
     } completion:^(BOOL finished) {
         
-        if (completion) {
-            completion();
+        if (startAnimateComplete) {
+            startAnimateComplete();
         }
     }];
 }
@@ -272,16 +276,19 @@
 /* 关闭筛选视图 */
 - (void)closeFilterViewCompletion:(void(^)(void))completion {
     
-    [self.shadowBgButton removeFromSuperview];
-    
-    if (self == nil || self.startY == StartYDefault) {
-        return;//如果self.startY 是默认的-1000，说明没有执行过pop，所以也不需要关闭
+    //如果正在进行关闭动画，那么返回
+    if (self.ifCloseAnimating) {
+        return;
     }
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"FilterViewTopCollectionDeleteBtnClick" object:nil];
     
     //计算tableView的宽度
     CGFloat firstTableWidth = kWindowW*(self.levelType==YYBaseFilterTypeSingleLevel?1:FirstLevelScale);
     CGFloat secondTableWidth = kWindowW*(self.levelType==YYBaseFilterTypeSingleLevel?0:(1-FirstLevelScale));
     
+    //关闭动画开始，则此值置为yes
+    self.ifCloseAnimating = YES;
     //消失的动画
     [UIView animateWithDuration:AnimationDuration animations:^{
         
@@ -298,18 +305,24 @@
         if (self.filterView.superview) {
             [self.filterView removeFromSuperview];
         }
-        
+
         if (self.topBgClearButton.subviews) {
             [self.topBgClearButton removeFromSuperview];
         }
-        
+
         if (self.shadowBgButton.superview) {
             [self.shadowBgButton removeFromSuperview];
         }
         
+        self.ifCloseAnimating = NO;//表示动画已结束
         
         if (completion) {
             completion();
+        }
+        
+        
+        if (self.closeAnimateComplete) {
+            self.closeAnimateComplete();
         }
     }];
 }
@@ -318,11 +331,11 @@
 #pragma mark - Button Click
 
 - (void)shadowBgButtonClick {
+    
     [self closeFilterViewCompletion:nil];
 }
 
 - (void)confirmBtnClick {
-    
     
     [self closeFilterViewCompletion:^{
         
