@@ -30,7 +30,7 @@
 /** 第二层元素数组，注意：格式为  @[@[@"aa",@"bb",@"cc"],@[@"aa",@"bb",@"cc"],@[@"aa",@"bb",@"cc"]] */
 @property (nonatomic, strong) NSArray *secondLevelElements;
 
-/** 第二层元素数组，注意：格式为  @[@[@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"]],@[@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"]],@[@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"]]] */
+/** 第三层元素数组，注意：格式为  @[@[@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"]],@[@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"]],@[@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"]]] */
 @property (nonatomic, strong) NSArray *thirdLevelElement;
 
 /** 当前选择的所有条件 */

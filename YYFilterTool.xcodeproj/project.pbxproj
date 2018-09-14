@@ -40,6 +40,10 @@
 		BCC3810F2142655E0069E76E /* select_square_bright.png in Resources */ = {isa = PBXBuildFile; fileRef = BCC381062142655E0069E76E /* select_square_bright.png */; };
 		BCC381102142655E0069E76E /* small_remove@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCC381072142655E0069E76E /* small_remove@2x.png */; };
 		BCC3811321426D630069E76E /* YYBaseFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC3811221426D630069E76E /* YYBaseFilter.m */; };
+		BCEC05DB214B89B500E68E00 /* FirstAndSecondTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = BCEC05DA214B89B500E68E00 /* FirstAndSecondTableView.m */; };
+		BCEC05DE214B89C800E68E00 /* ThirdTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = BCEC05DD214B89C800E68E00 /* ThirdTableView.m */; };
+		BCEC05E1214B926B00E68E00 /* FirstAndSecondConditionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = BCEC05E0214B926B00E68E00 /* FirstAndSecondConditionModel.m */; };
+		BCEC05E4214B9F8C00E68E00 /* ThirdConditionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = BCEC05E3214B9F8C00E68E00 /* ThirdConditionModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -104,6 +108,14 @@
 		BCC381072142655E0069E76E /* small_remove@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "small_remove@2x.png"; sourceTree = "<group>"; };
 		BCC3811121426D630069E76E /* YYBaseFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YYBaseFilter.h; sourceTree = "<group>"; };
 		BCC3811221426D630069E76E /* YYBaseFilter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YYBaseFilter.m; sourceTree = "<group>"; };
+		BCEC05D9214B89B500E68E00 /* FirstAndSecondTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirstAndSecondTableView.h; sourceTree = "<group>"; };
+		BCEC05DA214B89B500E68E00 /* FirstAndSecondTableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FirstAndSecondTableView.m; sourceTree = "<group>"; };
+		BCEC05DC214B89C800E68E00 /* ThirdTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThirdTableView.h; sourceTree = "<group>"; };
+		BCEC05DD214B89C800E68E00 /* ThirdTableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ThirdTableView.m; sourceTree = "<group>"; };
+		BCEC05DF214B926B00E68E00 /* FirstAndSecondConditionModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirstAndSecondConditionModel.h; sourceTree = "<group>"; };
+		BCEC05E0214B926B00E68E00 /* FirstAndSecondConditionModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FirstAndSecondConditionModel.m; sourceTree = "<group>"; };
+		BCEC05E2214B9F8C00E68E00 /* ThirdConditionModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThirdConditionModel.h; sourceTree = "<group>"; };
+		BCEC05E3214B9F8C00E68E00 /* ThirdConditionModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ThirdConditionModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +174,14 @@
 				BCC3811221426D630069E76E /* YYBaseFilter.m */,
 				BCC380CE214253020069E76E /* TopConditionCollectionView.h */,
 				BCC380C7214253020069E76E /* TopConditionCollectionView.m */,
+				BCEC05D9214B89B500E68E00 /* FirstAndSecondTableView.h */,
+				BCEC05DA214B89B500E68E00 /* FirstAndSecondTableView.m */,
+				BCEC05DF214B926B00E68E00 /* FirstAndSecondConditionModel.h */,
+				BCEC05E0214B926B00E68E00 /* FirstAndSecondConditionModel.m */,
+				BCEC05DC214B89C800E68E00 /* ThirdTableView.h */,
+				BCEC05DD214B89C800E68E00 /* ThirdTableView.m */,
+				BCEC05E2214B9F8C00E68E00 /* ThirdConditionModel.h */,
+				BCEC05E3214B9F8C00E68E00 /* ThirdConditionModel.m */,
 				BCC380C4214253020069E76E /* TopConditionCell.h */,
 				BCC380CC214253020069E76E /* TopConditionCell.m */,
 				BCC380CB214253020069E76E /* ConditionListCell.h */,
@@ -303,11 +323,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCEC05E1214B926B00E68E00 /* FirstAndSecondConditionModel.m in Sources */,
+				BCEC05E4214B9F8C00E68E00 /* ThirdConditionModel.m in Sources */,
 				BCC380D2214253020069E76E /* TopConditionCollectionView.m in Sources */,
 				BCC380F6214253970069E76E /* NSArray+MASAdditions.m in Sources */,
 				BCC380B2214252650069E76E /* ViewController.m in Sources */,
 				BCC380F7214253970069E76E /* View+MASAdditions.m in Sources */,
 				BCC380F1214253970069E76E /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
+				BCEC05DE214B89C800E68E00 /* ThirdTableView.m in Sources */,
 				BCC380F3214253970069E76E /* MASCompositeConstraint.m in Sources */,
 				BCC3811321426D630069E76E /* YYBaseFilter.m in Sources */,
 				BCC380D4214253020069E76E /* FilterSelectIndexModel.m in Sources */,
@@ -319,6 +342,7 @@
 				BCC380F4214253970069E76E /* MASConstraintMaker.m in Sources */,
 				BCC380D1214253020069E76E /* ConditionListCell.m in Sources */,
 				BCC380F5214253970069E76E /* MASLayoutConstraint.m in Sources */,
+				BCEC05DB214B89B500E68E00 /* FirstAndSecondTableView.m in Sources */,
 				BCC380BD214252660069E76E /* main.m in Sources */,
 				BCC380AF214252650069E76E /* AppDelegate.m in Sources */,
 				BCC380FD214256AA0069E76E /* ExtensionButton.m in Sources */,

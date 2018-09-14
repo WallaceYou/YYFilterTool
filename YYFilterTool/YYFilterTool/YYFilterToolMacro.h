@@ -14,6 +14,15 @@ typedef NS_ENUM(NSUInteger, YYBaseFilterType) {
     YYBaseFilterTypeDoubleLevel = 2,
 };
 
+
+/* UI相关 */
+#define FirstLevelScale             0.35//如果是两层筛选，则第一层的tableView的宽度占总宽度的比例
+#define FirstAndSecondLevelScale    0.2//如果是三层筛选，则第一层和第二层tableView的宽度的比例
+#define TopAndBottomHeight          46//上面topConditionCollectionView的高度以及下面confirmBtn的高度
+#define TabelViewCellHeight         50//tableView的行高，无论第一层还是第二层
+#define MaxTableViewCellCount       7//最多显示7行，无论第一层还是第二层
+#define AnimationDuration           .25
+
 /* 屏幕尺寸相关 */
 #define kWindowH                [UIScreen mainScreen].bounds.size.height
 #define kWindowW                [UIScreen mainScreen].bounds.size.width

@@ -8,23 +8,15 @@
 
 #import "YYBaseFilter.h"
 #import "TopConditionCollectionView.h"
+#import "FirstAndSecondTableView.h"
+#import "FirstAndSecondConditionModel.h"
+#import "ThirdTableView.h"
+#import "ThirdConditionModel.h"
 #import "ConditionListCell.h"
 #import "ConditionListModel.h"
 
-#define FirstLevelScale         0.35//如果是两层筛选，则第一层的tableView的宽度占总宽度的比例
-#define TopAndBottomHeight      46//上面topConditionCollectionView的高度以及下面confirmBtn的高度
-#define TabelViewCellHeight     50//tableView的行高，无论第一层还是第二层
-#define MaxTableViewCellCount   7//最多显示7行，无论第一层还是第二层
-#define AnimationDuration       .25
 
-
-@interface YYBaseFilter () <UITableViewDelegate, UITableViewDataSource>
-
-/* startY表示筛选视图相对于window的Y值是多少，即从Y轴的哪个位置开始 */
-@property (nonatomic, assign) CGFloat startY;
-
-/* 表示是否正在进行筛选视图的打开动画，防止在弹出时快速的点击多次导致调用多次关闭动画完成后的回调 */
-@property (nonatomic, assign) BOOL ifCloseAnimating;
+@interface YYBaseFilter ()
 
 /* 顶部透明的点击可以收起筛选视图的背景 */
 @property (nonatomic, strong) UIButton *topBgClearButton;
@@ -42,13 +34,31 @@
 @property (nonatomic, strong) UIView *lineView;
 
 /* 一级tableView */
-@property (nonatomic, strong) UITableView *firstLevelTableView;
+@property (nonatomic, strong) FirstAndSecondTableView *firstLevelTableView;
 
 /* 二级tableView */
-@property (nonatomic, strong) UITableView *secondLevelTableView;
+@property (nonatomic, strong) ThirdTableView *secondLevelTableView;
+
+/* 三级tableView */
+@property (nonatomic, strong) ThirdTableView *thirdTableView;
 
 /* 确定按钮 */
 @property (nonatomic, strong) UIButton *confirmBtn;
+
+/* 显示第一层表格所需要的所有信息 */
+@property (nonatomic, strong) FirstAndSecondConditionModel *firstDataModel;
+
+/* 显示第二层表格所需要的所有信息 */
+@property (nonatomic, strong) FirstAndSecondConditionModel *secondDataModel;
+
+/** 显示第三层表格所需要的所有信息 */
+@property (nonatomic, strong) ThirdConditionModel *thirdDataModel;
+
+/* startY表示筛选视图相对于window的Y值是多少，即从Y轴的哪个位置开始 */
+@property (nonatomic, assign) CGFloat startY;
+
+/* 表示是否正在进行筛选视图的打开动画，防止在弹出时快速的点击多次导致调用多次关闭动画完成后的回调 */
+@property (nonatomic, assign) BOOL ifCloseAnimating;
 
 /* 表示当前选择的索引 */
 @property (nonatomic, strong) FilterSelectIndexModel *indexModel;
@@ -71,9 +81,7 @@
         self.ifCloseAnimating = NO;//关闭动画还没有开始，所以默认已经是NO
         self.levelType = YYBaseFilterTypeSingleLevel;//默认一层
         [self initFilterViews];
-        
     }
-    
     return self;
 }
 
@@ -119,7 +127,6 @@
     
     
     //底部确定按钮
-    //    _confirmBtn = [UIButton buttonWithTitle:@"完成" titleColor:WhiteColor textFont:FONT_SystemFontSize(FONT_SIZE_TITLE) buttonBgColor:BrightBlueColor];
     _confirmBtn = [UIButton new];
     [_confirmBtn setTitle:@"完成" forState:UIControlStateNormal];
     [_confirmBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -129,20 +136,20 @@
     [_filterView addSubview:_confirmBtn];
     
     //一级条件
-    _firstLevelTableView = [UITableView new];
-    _firstLevelTableView.delegate = self;
-    _firstLevelTableView.dataSource = self;
-    _firstLevelTableView.backgroundColor = BgGreyColor;
-    _firstLevelTableView.tableFooterView = [UIView new];
-    [_firstLevelTableView registerClass:[ConditionListCell class] forCellReuseIdentifier:@"ConditionListCell"];
+    _firstLevelTableView = [FirstAndSecondTableView new];
+//    _firstLevelTableView.delegate = self;
+//    _firstLevelTableView.dataSource = self;
+//    _firstLevelTableView.backgroundColor = BgGreyColor;
+//    _firstLevelTableView.tableFooterView = [UIView new];
+//    [_firstLevelTableView registerClass:[ConditionListCell class] forCellReuseIdentifier:@"ConditionListCell"];
     [_filterView addSubview:_firstLevelTableView];
     
     //二级条件
-    _secondLevelTableView = [UITableView new];
-    _secondLevelTableView.delegate = self;
-    _secondLevelTableView.dataSource = self;
-    _secondLevelTableView.tableFooterView = [UIView new];
-    [_secondLevelTableView registerClass:[ConditionListCell class] forCellReuseIdentifier:@"ConditionListCell"];
+    _secondLevelTableView = [ThirdTableView new];
+//    _secondLevelTableView.delegate = self;
+//    _secondLevelTableView.dataSource = self;
+//    _secondLevelTableView.tableFooterView = [UIView new];
+//    [_secondLevelTableView registerClass:[ConditionListCell class] forCellReuseIdentifier:@"ConditionListCell"];
     [_filterView addSubview:_secondLevelTableView];
 }
 
@@ -150,13 +157,16 @@
 #pragma mark - Setter
 - (void)setFirstLevelElements:(NSArray *)firstLevelElements {
     _firstLevelElements = firstLevelElements;
-    [self.firstLevelTableView reloadData];
+    self.firstDataModel.dataSource = firstLevelElements;
+    self.firstLevelTableView.dataModel = self.firstDataModel;
 }
 
 - (void)setSecondLevelElements:(NSArray *)secondLevelElements {
     _secondLevelElements = secondLevelElements;
-    [self.secondLevelTableView reloadData];
+    self.thirdDataModel.dataSource = secondLevelElements;
+    self.thirdTableView.dataModel = self.thirdDataModel;
 }
+
 
 - (void)setTopConditionEnable:(BOOL)topConditionEnable {
     
@@ -249,8 +259,6 @@
     //        [self tableView:self.firstLevelTableView didSelectRowAtIndexPath:indexPath];
     //    }
     
-    //两层则没有分割线，一层则有
-    _firstLevelTableView.separatorStyle = self.levelType == YYBaseFilterTypeSingleLevel?UITableViewCellSeparatorStyleSingleLine:UITableViewCellSeparatorStyleNone;
     
     //出现的动画
     [UIView animateWithDuration:AnimationDuration animations:^{
@@ -399,276 +407,276 @@
 
 #pragma mark - UITableViewDataSource
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    if (tableView == self.firstLevelTableView) {
-        return self.firstLevelElements.count;
-    } else if (tableView == self.secondLevelTableView) {
-        
-        if (self.indexModel.index >= self.secondLevelElements.count) {
-            return 0;
-        }
-        
-        NSArray *secondElements = [self.secondLevelElements objectAtIndex:self.indexModel.index];
-        
-        if ([secondElements isKindOfClass:[NSArray class]]) {
-            return secondElements.count;
-        } else {
-            return 0;
-        }
-        
-    } else {
-        return 0;
-    }
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    ConditionListCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ConditionListCell"];
-    
-    ConditionListModel *model = [ConditionListModel new];
-    model.selectedBtnHighlightedName = self.selectedBtnHighlightedName;
-    model.selectedBtnNormalName = self.selectedBtnNormalName;
-    
-    if (tableView == self.firstLevelTableView) {//如果是第一层tableView
-        
-        if (self.levelType == YYBaseFilterTypeSingleLevel) {//如果是一层筛选
-            
-            model.levelType = 2;
-            model.conditionName = [self.firstLevelElements objectAtIndex:indexPath.row];
-            
-            for (FilterSelectIndexModel *indexModel in self.currentConditions) {
-                if (indexModel.index == indexPath.row) {
-                    model.boxSelected = YES;
-                }
-            }
-            
-        } else {//两层筛选
-            model.levelType = 1;
-            model.conditionName = [self.firstLevelElements objectAtIndex:indexPath.row];
-            if (indexPath.row == self.indexModel.index) {
-                model.cellSelected = YES;
-            }
-            
-            
-            NSInteger indexNumber = 0;
-            for (FilterSelectIndexModel *model in self.currentConditions) {
-                if (model.index == indexPath.row) {
-                    indexNumber ++;
-                }
-            }
-            
-            model.indexNumber = indexNumber;
-            
-        }
-        
-    } else {//第二层tableView，则一定是两层筛选
-        
-        model.levelType = 2;
-        
-        NSArray *secondElements = [self.secondLevelElements objectAtIndex:self.indexModel.index];
-        if ([secondElements isKindOfClass:[NSArray class]]) {
-            model.conditionName = [secondElements objectAtIndex:indexPath.row];
-        } else {
-            model.conditionName = @"";
-        }
-        
-        for (FilterSelectIndexModel *indexModel in self.currentConditions) {
-            if (indexModel.index == self.indexModel.index && indexModel.subIndex.index == indexPath.row) {
-                model.boxSelected = YES;
-            }
-        }
-    }
-    cell.model = model;
-    return cell;
-}
-
-#pragma mark - UITableViewDelegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (tableView == self.firstLevelTableView) {//如果是点击的是第一层tableView
-        
-        if (self.levelType == YYBaseFilterTypeSingleLevel) {//如果是一层筛选
-            
-            if (self.multiSelectionEnable) {
-                
-                //先在当前条件中寻找，如果有此条件则删除，并刷新
-                NSArray *indexModelArray = [self.currentConditions copy];
-                
-                for (FilterSelectIndexModel *indexModel in indexModelArray) {
-                    if (indexModel.index == indexPath.row) {
-                        
-                        NSInteger index = [indexModelArray indexOfObject:indexModel];
-                        
-                        [self.currentConditions removeObjectAtIndex:index];
-                        self.topConditionCollectionView.conditions = self.currentConditions;
-                        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-                        [self.firstLevelTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-                        return;
-                    }
-                }
-                
-            }
-            
-            
-            
-            //如果没找到，则将此条件添加到self.currentConditions中去
-            FilterSelectIndexModel *secondModel = [FilterSelectIndexModel new];
-            secondModel.filterName = [self.firstLevelElements objectAtIndex:indexPath.row];
-            secondModel.index = indexPath.row;
-            secondModel.subIndex = nil;
-            
-            if (!self.multiSelectionEnable) {
-                [self.currentConditions removeAllObjects];
-            }
-            
-            [self.currentConditions addObject:secondModel];
-            
-            //将当前条件再赋值给头部当前条件collectionView中，刷新collectionView的显示
-            self.topConditionCollectionView.conditions = self.currentConditions;
-            [tableView deselectRowAtIndexPath:indexPath animated:YES];
-            
-            //然后刷新第二层tableView点击的这一行
-            [self.firstLevelTableView reloadData];
-            
-            if (self.multiSelectionEnable == NO) {//如果不支持多选，则直接返回
-                [self.confirmBtn sendActionsForControlEvents:UIControlEventTouchUpInside];
-            }
-            
-            
-        } else if (self.levelType == YYBaseFilterTypeDoubleLevel) {//如果是两层筛选
-            
-            //先得到上一个点击的cell，并将背景色置为灰色
-            UITableViewCell *lastCell = [self.firstLevelTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexModel.index inSection:0]];
-            lastCell.backgroundColor = BgGreyColor;
-            
-            //然后将点击的cell的背景变为白色
-            UITableViewCell *cell = [self.firstLevelTableView cellForRowAtIndexPath:indexPath];
-            cell.backgroundColor = [UIColor whiteColor];
-            
-            //然后将当前选择的cell信息记录下来，保存在self.indexModel中
-            FilterSelectIndexModel *indexModel = [FilterSelectIndexModel new];
-            indexModel.filterName = [self.firstLevelElements objectAtIndex:indexPath.row];
-            indexModel.index = indexPath.row;
-            indexModel.subIndex = nil;
-            self.indexModel = indexModel;
-            
-            
-            //如果允许多选
-            if (self.multiSelectionEnable) {
-                
-                //删除现有所有条件
-                [self.currentConditions removeAllObjects];
-                
-                //一个for循环全选所有二级条件
-                NSArray *secondElements = [self.secondLevelElements objectAtIndex:self.indexModel.index];
-                
-                for (NSString *secondFilter in secondElements) {
-                    
-                    FilterSelectIndexModel *secondModel = [FilterSelectIndexModel new];
-                    secondModel.filterName = secondFilter;
-                    secondModel.index = [secondElements indexOfObject:secondFilter];
-                    secondModel.subIndex = nil;
-                    
-                    BOOL isExist = NO;
-                    
-                    for (FilterSelectIndexModel *model in self.currentConditions) {
-                        if (model.subIndex.index == secondModel.index && model.index == self.indexModel.index) {
-                            isExist = YES;
-                            break;
-                        }
-                    }
-                    
-                    if (isExist) {
-                        continue;
-                    }
-                    
-                    
-                    FilterSelectIndexModel *firstModel = [FilterSelectIndexModel new];
-                    firstModel.filterName = self.indexModel.filterName;
-                    firstModel.index = self.indexModel.index;
-                    firstModel.subIndex = secondModel;
-                    
-                    
-                    [self.currentConditions addObject:firstModel];
-                    
-                }
-                
-                //将当前条件再赋值给头部当前条件collectionView中，刷新collectionView的显示
-                self.topConditionCollectionView.conditions = self.currentConditions;
-                
-                [self.secondLevelTableView reloadData];
-                [self.firstLevelTableView reloadData];
-            }
-            
-            
-        }
-        
-    } else {//如果点击的是第二层tableView
-        
-        if (self.multiSelectionEnable) {
-            //先在当前条件中寻找，如果有此条件则删除，并刷新
-            NSArray *indexModelArray = [self.currentConditions copy];
-            
-            for (FilterSelectIndexModel *indexModel in indexModelArray) {
-                if (indexModel.index == self.indexModel.index && indexModel.subIndex.index == indexPath.row) {
-                    
-                    NSInteger index = [indexModelArray indexOfObject:indexModel];
-                    
-                    [self.currentConditions removeObjectAtIndex:index];
-                    self.topConditionCollectionView.conditions = self.currentConditions;
-                    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-                    [self.secondLevelTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-                    
-                    
-                    [self.firstLevelTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.indexModel.index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-                    
-                    return;
-                }
-            }
-            
-        }
-        
-        
-        
-        //如果没找到，则将此条件添加到self.currentConditions中去
-        NSArray *secondElements = [self.secondLevelElements objectAtIndex:self.indexModel.index];
-        FilterSelectIndexModel *secondModel = [FilterSelectIndexModel new];
-        secondModel.filterName = [secondElements objectAtIndex:indexPath.row];
-        secondModel.index = indexPath.row;
-        secondModel.subIndex = nil;
-        
-        FilterSelectIndexModel *firstModel = [FilterSelectIndexModel new];
-        firstModel.filterName = self.indexModel.filterName;
-        firstModel.index = self.indexModel.index;
-        firstModel.subIndex = secondModel;
-        
-        if (!self.multiSelectionEnable) {
-            [self.currentConditions removeAllObjects];
-        }
-        
-        [self.currentConditions addObject:firstModel];
-        
-        //将当前条件再赋值给头部当前条件collectionView中，刷新collectionView的显示
-        self.topConditionCollectionView.conditions = self.currentConditions;
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        
-        //然后刷新第二层tableView点击的这一行
-        [self.secondLevelTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        
-        if (self.multiSelectionEnable == NO) {//如果不支持多选，则直接返回
-            [self.confirmBtn sendActionsForControlEvents:UIControlEventTouchUpInside];
-        }
-        
-        
-        [self.firstLevelTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.indexModel.index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-        
-    }
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return TabelViewCellHeight;
-}
+//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+//    
+//    if (tableView == self.firstLevelTableView) {
+//        return self.firstLevelElements.count;
+//    } else if (tableView == self.secondLevelTableView) {
+//        
+//        if (self.indexModel.index >= self.secondLevelElements.count) {
+//            return 0;
+//        }
+//        
+//        NSArray *secondElements = [self.secondLevelElements objectAtIndex:self.indexModel.index];
+//        
+//        if ([secondElements isKindOfClass:[NSArray class]]) {
+//            return secondElements.count;
+//        } else {
+//            return 0;
+//        }
+//        
+//    } else {
+//        return 0;
+//    }
+//}
+//
+//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    
+//    ConditionListCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ConditionListCell"];
+//    
+//    ConditionListModel *model = [ConditionListModel new];
+//    model.selectedBtnHighlightedName = self.selectedBtnHighlightedName;
+//    model.selectedBtnNormalName = self.selectedBtnNormalName;
+//    
+//    if (tableView == self.firstLevelTableView) {//如果是第一层tableView
+//        
+//        if (self.levelType == YYBaseFilterTypeSingleLevel) {//如果是一层筛选
+//            
+//            model.levelType = 2;
+//            model.conditionName = [self.firstLevelElements objectAtIndex:indexPath.row];
+//            
+//            for (FilterSelectIndexModel *indexModel in self.currentConditions) {
+//                if (indexModel.index == indexPath.row) {
+//                    model.boxSelected = YES;
+//                }
+//            }
+//            
+//        } else {//两层筛选
+//            model.levelType = 1;
+//            model.conditionName = [self.firstLevelElements objectAtIndex:indexPath.row];
+//            if (indexPath.row == self.indexModel.index) {
+//                model.cellSelected = YES;
+//            }
+//            
+//            
+//            NSInteger indexNumber = 0;
+//            for (FilterSelectIndexModel *model in self.currentConditions) {
+//                if (model.index == indexPath.row) {
+//                    indexNumber ++;
+//                }
+//            }
+//            
+//            model.indexNumber = indexNumber;
+//            
+//        }
+//        
+//    } else {//第二层tableView，则一定是两层筛选
+//        
+//        model.levelType = 2;
+//        
+//        NSArray *secondElements = [self.secondLevelElements objectAtIndex:self.indexModel.index];
+//        if ([secondElements isKindOfClass:[NSArray class]]) {
+//            model.conditionName = [secondElements objectAtIndex:indexPath.row];
+//        } else {
+//            model.conditionName = @"";
+//        }
+//        
+//        for (FilterSelectIndexModel *indexModel in self.currentConditions) {
+//            if (indexModel.index == self.indexModel.index && indexModel.subIndex.index == indexPath.row) {
+//                model.boxSelected = YES;
+//            }
+//        }
+//    }
+//    cell.model = model;
+//    return cell;
+//}
+//
+//#pragma mark - UITableViewDelegate
+//
+//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+//    if (tableView == self.firstLevelTableView) {//如果是点击的是第一层tableView
+//        
+//        if (self.levelType == YYBaseFilterTypeSingleLevel) {//如果是一层筛选
+//            
+//            if (self.multiSelectionEnable) {
+//                
+//                //先在当前条件中寻找，如果有此条件则删除，并刷新
+//                NSArray *indexModelArray = [self.currentConditions copy];
+//                
+//                for (FilterSelectIndexModel *indexModel in indexModelArray) {
+//                    if (indexModel.index == indexPath.row) {
+//                        
+//                        NSInteger index = [indexModelArray indexOfObject:indexModel];
+//                        
+//                        [self.currentConditions removeObjectAtIndex:index];
+//                        self.topConditionCollectionView.conditions = self.currentConditions;
+//                        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+//                        [self.firstLevelTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//                        return;
+//                    }
+//                }
+//                
+//            }
+//            
+//            
+//            
+//            //如果没找到，则将此条件添加到self.currentConditions中去
+//            FilterSelectIndexModel *secondModel = [FilterSelectIndexModel new];
+//            secondModel.filterName = [self.firstLevelElements objectAtIndex:indexPath.row];
+//            secondModel.index = indexPath.row;
+//            secondModel.subIndex = nil;
+//            
+//            if (!self.multiSelectionEnable) {
+//                [self.currentConditions removeAllObjects];
+//            }
+//            
+//            [self.currentConditions addObject:secondModel];
+//            
+//            //将当前条件再赋值给头部当前条件collectionView中，刷新collectionView的显示
+//            self.topConditionCollectionView.conditions = self.currentConditions;
+//            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+//            
+//            //然后刷新第二层tableView点击的这一行
+//            [self.firstLevelTableView reloadData];
+//            
+//            if (self.multiSelectionEnable == NO) {//如果不支持多选，则直接返回
+//                [self.confirmBtn sendActionsForControlEvents:UIControlEventTouchUpInside];
+//            }
+//            
+//            
+//        } else if (self.levelType == YYBaseFilterTypeDoubleLevel) {//如果是两层筛选
+//            
+//            //先得到上一个点击的cell，并将背景色置为灰色
+//            UITableViewCell *lastCell = [self.firstLevelTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexModel.index inSection:0]];
+//            lastCell.backgroundColor = BgGreyColor;
+//            
+//            //然后将点击的cell的背景变为白色
+//            UITableViewCell *cell = [self.firstLevelTableView cellForRowAtIndexPath:indexPath];
+//            cell.backgroundColor = [UIColor whiteColor];
+//            
+//            //然后将当前选择的cell信息记录下来，保存在self.indexModel中
+//            FilterSelectIndexModel *indexModel = [FilterSelectIndexModel new];
+//            indexModel.filterName = [self.firstLevelElements objectAtIndex:indexPath.row];
+//            indexModel.index = indexPath.row;
+//            indexModel.subIndex = nil;
+//            self.indexModel = indexModel;
+//            
+//            
+//            //如果允许多选
+//            if (self.multiSelectionEnable) {
+//                
+//                //删除现有所有条件
+//                [self.currentConditions removeAllObjects];
+//                
+//                //一个for循环全选所有二级条件
+//                NSArray *secondElements = [self.secondLevelElements objectAtIndex:self.indexModel.index];
+//                
+//                for (NSString *secondFilter in secondElements) {
+//                    
+//                    FilterSelectIndexModel *secondModel = [FilterSelectIndexModel new];
+//                    secondModel.filterName = secondFilter;
+//                    secondModel.index = [secondElements indexOfObject:secondFilter];
+//                    secondModel.subIndex = nil;
+//                    
+//                    BOOL isExist = NO;
+//                    
+//                    for (FilterSelectIndexModel *model in self.currentConditions) {
+//                        if (model.subIndex.index == secondModel.index && model.index == self.indexModel.index) {
+//                            isExist = YES;
+//                            break;
+//                        }
+//                    }
+//                    
+//                    if (isExist) {
+//                        continue;
+//                    }
+//                    
+//                    
+//                    FilterSelectIndexModel *firstModel = [FilterSelectIndexModel new];
+//                    firstModel.filterName = self.indexModel.filterName;
+//                    firstModel.index = self.indexModel.index;
+//                    firstModel.subIndex = secondModel;
+//                    
+//                    
+//                    [self.currentConditions addObject:firstModel];
+//                    
+//                }
+//                
+//                //将当前条件再赋值给头部当前条件collectionView中，刷新collectionView的显示
+//                self.topConditionCollectionView.conditions = self.currentConditions;
+//                
+//                [self.secondLevelTableView reloadData];
+//                [self.firstLevelTableView reloadData];
+//            }
+//            
+//            
+//        }
+//        
+//    } else {//如果点击的是第二层tableView
+//        
+//        if (self.multiSelectionEnable) {
+//            //先在当前条件中寻找，如果有此条件则删除，并刷新
+//            NSArray *indexModelArray = [self.currentConditions copy];
+//            
+//            for (FilterSelectIndexModel *indexModel in indexModelArray) {
+//                if (indexModel.index == self.indexModel.index && indexModel.subIndex.index == indexPath.row) {
+//                    
+//                    NSInteger index = [indexModelArray indexOfObject:indexModel];
+//                    
+//                    [self.currentConditions removeObjectAtIndex:index];
+//                    self.topConditionCollectionView.conditions = self.currentConditions;
+//                    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+//                    [self.secondLevelTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//                    
+//                    
+//                    [self.firstLevelTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.indexModel.index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+//                    
+//                    return;
+//                }
+//            }
+//            
+//        }
+//        
+//        
+//        
+//        //如果没找到，则将此条件添加到self.currentConditions中去
+//        NSArray *secondElements = [self.secondLevelElements objectAtIndex:self.indexModel.index];
+//        FilterSelectIndexModel *secondModel = [FilterSelectIndexModel new];
+//        secondModel.filterName = [secondElements objectAtIndex:indexPath.row];
+//        secondModel.index = indexPath.row;
+//        secondModel.subIndex = nil;
+//        
+//        FilterSelectIndexModel *firstModel = [FilterSelectIndexModel new];
+//        firstModel.filterName = self.indexModel.filterName;
+//        firstModel.index = self.indexModel.index;
+//        firstModel.subIndex = secondModel;
+//        
+//        if (!self.multiSelectionEnable) {
+//            [self.currentConditions removeAllObjects];
+//        }
+//        
+//        [self.currentConditions addObject:firstModel];
+//        
+//        //将当前条件再赋值给头部当前条件collectionView中，刷新collectionView的显示
+//        self.topConditionCollectionView.conditions = self.currentConditions;
+//        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+//        
+//        //然后刷新第二层tableView点击的这一行
+//        [self.secondLevelTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//        
+//        if (self.multiSelectionEnable == NO) {//如果不支持多选，则直接返回
+//            [self.confirmBtn sendActionsForControlEvents:UIControlEventTouchUpInside];
+//        }
+//        
+//        
+//        [self.firstLevelTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.indexModel.index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+//        
+//    }
+//}
+//
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    return TabelViewCellHeight;
+//}
 
 #pragma mark - Lazy
 
@@ -677,6 +685,27 @@
         _currentConditions = [NSMutableArray new];
     }
     return _currentConditions;
+}
+
+- (FirstAndSecondConditionModel *)firstDataModel {
+    if (!_firstDataModel) {
+        _firstDataModel = [FirstAndSecondConditionModel new];
+    }
+    return _firstDataModel;
+}
+
+- (FirstAndSecondConditionModel *)secondDataModel {
+    if (!_secondDataModel) {
+        _secondDataModel = [FirstAndSecondConditionModel new];
+    }
+    return _secondDataModel;
+}
+
+- (ThirdConditionModel *)thirdDataModel {
+    if (!_thirdDataModel) {
+        _thirdDataModel = [ThirdConditionModel new];
+    }
+    return _thirdDataModel;
 }
 
 @end
