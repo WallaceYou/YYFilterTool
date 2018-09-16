@@ -37,7 +37,7 @@
 @property (nonatomic, strong) FirstAndSecondTableView *firstLevelTableView;
 
 /* 二级tableView */
-@property (nonatomic, strong) ThirdTableView *secondLevelTableView;
+@property (nonatomic, strong) FirstAndSecondTableView *secondLevelTableView;
 
 /* 三级tableView */
 @property (nonatomic, strong) ThirdTableView *thirdTableView;
@@ -137,34 +137,29 @@
     
     //一级条件
     _firstLevelTableView = [FirstAndSecondTableView new];
-//    _firstLevelTableView.delegate = self;
-//    _firstLevelTableView.dataSource = self;
-//    _firstLevelTableView.backgroundColor = BgGreyColor;
-//    _firstLevelTableView.tableFooterView = [UIView new];
-//    [_firstLevelTableView registerClass:[ConditionListCell class] forCellReuseIdentifier:@"ConditionListCell"];
     [_filterView addSubview:_firstLevelTableView];
     
     //二级条件
-    _secondLevelTableView = [ThirdTableView new];
-//    _secondLevelTableView.delegate = self;
-//    _secondLevelTableView.dataSource = self;
-//    _secondLevelTableView.tableFooterView = [UIView new];
-//    [_secondLevelTableView registerClass:[ConditionListCell class] forCellReuseIdentifier:@"ConditionListCell"];
+    _secondLevelTableView = [FirstAndSecondTableView new];
     [_filterView addSubview:_secondLevelTableView];
+    
+    
+    _thirdTableView = [ThirdTableView new];
+    [_filterView addSubview:_thirdTableView];
 }
 
 
 #pragma mark - Setter
 - (void)setFirstLevelElements:(NSArray *)firstLevelElements {
     _firstLevelElements = firstLevelElements;
-    self.firstDataModel.dataSource = firstLevelElements;
-    self.firstLevelTableView.dataModel = self.firstDataModel;
 }
 
 - (void)setSecondLevelElements:(NSArray *)secondLevelElements {
     _secondLevelElements = secondLevelElements;
-    self.thirdDataModel.dataSource = secondLevelElements;
-    self.thirdTableView.dataModel = self.thirdDataModel;
+}
+
+- (void)setThirdLevelElements:(NSArray *)thirdLevelElements {
+    _thirdLevelElements = thirdLevelElements;
 }
 
 
@@ -181,7 +176,7 @@
 
 - (void)setMultiSelectionEnable:(BOOL)multiSelectionEnable {
     _multiSelectionEnable = multiSelectionEnable;
-    
+    self.thirdDataModel.multiSelectionEnable = multiSelectionEnable;
     //设置完之后看看_topConditionEnable是否为YES，如果为YES说明之前设置了topConditionEnable，只不过当时还没设置multiSelectionEnable，此时可以设置topConditionEnable了
     _topConditionEnable = _allowTopCondition;
 }
@@ -202,7 +197,11 @@
     }
     
     self.closeAnimateComplete = closeAnimateComplete;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(topFilterDeleteBtnClick:) name:@"FilterViewTopCollectionDeleteBtnClick" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(topFilterDeleteBtnClick:) name:FilterViewTopCollectionDeleteBtnClick object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(firstAndSecondTableClick:) name:FirstAndSecondTableViewClick object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(thirdTableClick:) name:ThirdTableViewClick object:nil];
     
     self.startY = startY;
     
@@ -217,7 +216,15 @@
     //计算得到数量最多的一个数组有几个元素
     NSInteger maxElement = 0;
     
-    for (NSArray *secondElements in self.secondLevelElements) {//先比较第二层
+    for (NSArray *thirdElements in self.thirdLevelElements) {//先比较第三层
+        for (NSArray *secondElements in thirdElements) {
+            if (secondElements.count > maxElement) {
+                maxElement = secondElements.count;
+            }
+        }
+    }
+    
+    for (NSArray *secondElements in self.secondLevelElements) {//再比较第二层
         if (secondElements.count > maxElement) {
             maxElement = secondElements.count;
         }
@@ -234,8 +241,30 @@
     //计算tableView的高度和宽度
     CGFloat tableViewHeight = TabelViewCellHeight*maxElement;
     
-    CGFloat firstTableWidth = kWindowW*(self.levelType==YYBaseFilterTypeSingleLevel?1:FirstLevelScale);
-    CGFloat secondTableWidth = kWindowW*(self.levelType==YYBaseFilterTypeSingleLevel?0:(1-FirstLevelScale));
+    CGFloat firstTableWidth = 0;
+    CGFloat secondTableWidth = 0;
+    CGFloat thirdTableWidth = 0;
+    
+    switch (self.levelType) {
+            
+        case YYBaseFilterTypeSingleLevel:
+            thirdTableWidth = kWindowW;
+            break;
+            
+        case YYBaseFilterTypeDoubleLevel:
+            firstTableWidth = kWindowW*FirstLevelScale;
+            thirdTableWidth = kWindowW*(1-FirstLevelScale);
+            break;
+            
+        case YYBaseFilterTypeThreeLevel:
+            firstTableWidth = kWindowW*FirstAndSecondLevelScale;
+            secondTableWidth = kWindowW*FirstAndSecondLevelScale;
+            thirdTableWidth = kWindowW*(1-FirstAndSecondLevelScale*2);
+            break;
+        default:
+            break;
+    }
+    
     
     //计算self的高度
     CGFloat popViewHeight = topColletionHeight+tableViewHeight+confirmBtnHeight;
@@ -248,6 +277,7 @@
     self.lineView.frame = CGRectMake(0, 0, kWindowW, 0);
     self.firstLevelTableView.frame = CGRectMake(0, 0, firstTableWidth, 0);;
     self.secondLevelTableView.frame = CGRectMake(firstTableWidth, 0, secondTableWidth, 0);
+    self.thirdTableView.frame = CGRectMake(firstTableWidth+secondTableWidth, 0, thirdTableWidth, 0);
     self.confirmBtn.frame = CGRectMake(0, 0, kWindowW, 0);
     
     self.shadowBgButton.frame = CGRectMake(0, startY, kWindowW, kWindowH - startY);
@@ -259,6 +289,76 @@
     //        [self tableView:self.firstLevelTableView didSelectRowAtIndexPath:indexPath];
     //    }
     
+    //刷新数据显示
+    if (self.levelType == YYBaseFilterTypeSingleLevel) {
+        
+        //更改第三层tableView数据源，并刷新第三层表格（一层筛选时，没有前两层tableView）
+        self.thirdDataModel.dataSource = self.firstLevelElements;
+        self.thirdTableView.dataModel = self.thirdDataModel;
+        
+    } else if (self.levelType == YYBaseFilterTypeDoubleLevel) {
+        
+        //更改第一层tableView数据源，并刷新第一层表格
+        self.firstDataModel.dataSource = self.firstLevelElements;
+        self.firstLevelTableView.dataModel = self.firstDataModel;
+        
+        //更改第三层tableView数据源，默认显示第一行数据
+        self.thirdDataModel.dataSource = [self.secondLevelElements objectAtIndex:0];
+        
+        //如果有设置最后一层，则默认初始化所有条件都为未点击状态
+//        NSMutableArray *currentSelectConditions = [NSMutableArray new];
+//        for (int i = 0; i<self.thirdDataModel.dataSource.count; i++) {
+//            [currentSelectConditions addObject:@(NO)];
+//        }
+//        self.thirdDataModel.currentSelectedConditions = [currentSelectConditions copy];
+        
+        self.thirdDataModel.currentSelectedConditions = [self getThirdDataCurrentSelectedConditions];
+        
+        //刷新第三层表格
+        self.thirdTableView.dataModel = self.thirdDataModel;
+        
+        //然后将当前选择的信息记录下来，保存在self.indexModel中，默认为第一行数据
+        FilterSelectIndexModel *indexModel = [FilterSelectIndexModel new];
+        indexModel.filterName = [self.firstLevelElements objectAtIndex:0];
+        indexModel.index = 0;
+        indexModel.subIndex = nil;
+        self.indexModel = indexModel;
+        
+    } else {
+        
+        self.firstDataModel.dataSource = self.firstLevelElements;
+        self.firstLevelTableView.dataModel = self.firstDataModel;
+        
+        //默认显示第一行数据
+        self.secondDataModel.dataSource = [self.secondLevelElements objectAtIndex:0];
+        self.secondLevelTableView.dataModel = self.secondDataModel;
+        
+        //默认显示第一行数据
+        self.thirdDataModel.dataSource = [[self.thirdLevelElements objectAtIndex:0] objectAtIndex:0];
+        
+//        //如果有设置最后一层，则默认初始化所有条件都为未点击状态
+//        NSMutableArray *currentSelectConditions = [NSMutableArray new];
+//        for (int i = 0; i<self.thirdDataModel.dataSource.count; i++) {
+//            [currentSelectConditions addObject:@(NO)];
+//        }
+//        self.thirdDataModel.currentSelectedConditions = [currentSelectConditions copy];
+        
+        self.thirdDataModel.currentSelectedConditions = [self getThirdDataCurrentSelectedConditions];
+        self.thirdTableView.dataModel = self.thirdDataModel;
+        
+        //然后将当前选择的信息记录下来，保存在self.indexModel中，默认为第一行数据
+        FilterSelectIndexModel *indexModel = [FilterSelectIndexModel new];
+        indexModel.filterName = [self.firstLevelElements objectAtIndex:0];
+        indexModel.index = 0;
+        
+        FilterSelectIndexModel *subIndexModel = [FilterSelectIndexModel new];
+        subIndexModel.filterName = [[self.secondLevelElements objectAtIndex:0] objectAtIndex:0];
+        subIndexModel.index = 0;
+        subIndexModel.subIndex = nil;
+        
+        indexModel.subIndex = subIndexModel;
+        self.indexModel = indexModel;
+    }
     
     //出现的动画
     [UIView animateWithDuration:AnimationDuration animations:^{
@@ -266,8 +366,9 @@
         self.filterView.frame = CGRectMake(0, startY, kWindowW, popViewHeight);
         self.topConditionCollectionView.frame = CGRectMake(0, 0, kWindowW, topColletionHeight);
         self.lineView.frame = CGRectMake(0, TopAndBottomHeight-1, kWindowW, 1);
-        self.firstLevelTableView.frame = CGRectMake(0, topColletionHeight, firstTableWidth, tableViewHeight);
+        self.firstLevelTableView.frame = CGRectMake(0, topColletionHeight, firstTableWidth+1, tableViewHeight);
         self.secondLevelTableView.frame = CGRectMake(firstTableWidth, topColletionHeight, secondTableWidth, tableViewHeight);
+        self.thirdTableView.frame = CGRectMake(firstTableWidth+secondTableWidth, topColletionHeight, thirdTableWidth, tableViewHeight);
         self.confirmBtn.frame = CGRectMake(0, topColletionHeight+tableViewHeight, kWindowW, confirmBtnHeight);
         
         self.shadowBgButton.alpha = 0.8;
@@ -289,11 +390,34 @@
         return;
     }
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"FilterViewTopCollectionDeleteBtnClick" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:FilterViewTopCollectionDeleteBtnClick object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:FirstAndSecondTableViewClick object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:ThirdTableViewClick object:nil];
     
     //计算tableView的宽度
-    CGFloat firstTableWidth = kWindowW*(self.levelType==YYBaseFilterTypeSingleLevel?1:FirstLevelScale);
-    CGFloat secondTableWidth = kWindowW*(self.levelType==YYBaseFilterTypeSingleLevel?0:(1-FirstLevelScale));
+    CGFloat firstTableWidth = 0;
+    CGFloat secondTableWidth = 0;
+    CGFloat thirdTableWidth = 0;
+    
+    switch (self.levelType) {
+            
+        case YYBaseFilterTypeSingleLevel:
+            thirdTableWidth = kWindowW;
+            break;
+            
+        case YYBaseFilterTypeDoubleLevel:
+            firstTableWidth = kWindowW*FirstLevelScale;
+            thirdTableWidth = kWindowW*(1-FirstLevelScale);
+            break;
+            
+        case YYBaseFilterTypeThreeLevel:
+            firstTableWidth = kWindowW*FirstAndSecondLevelScale;
+            secondTableWidth = kWindowW*FirstAndSecondLevelScale;
+            thirdTableWidth = kWindowW*(1-FirstAndSecondLevelScale*2);
+            break;
+        default:
+            break;
+    }
     
     //关闭动画开始，则此值置为yes
     self.ifCloseAnimating = YES;
@@ -305,6 +429,7 @@
         self.lineView.frame = CGRectMake(0, 0, kWindowW, 0);
         self.firstLevelTableView.frame = CGRectMake(0, 0, firstTableWidth, 0);
         self.secondLevelTableView.frame = CGRectMake(firstTableWidth, 0, secondTableWidth, 0);
+        self.thirdTableView.frame = CGRectMake(firstTableWidth+secondTableWidth, 0, thirdTableWidth, 0);
         self.confirmBtn.frame = CGRectMake(0, 0, kWindowW, 0);
         self.filterView.frame = CGRectMake(0, self.startY, kWindowW, 0);
         
@@ -391,6 +516,143 @@
     }
 }
 
+- (void)firstAndSecondTableClick:(NSNotification *)notification {
+    
+    //得到当前点击的按钮的序号
+    NSDictionary *userInfo = notification.userInfo;
+    NSIndexPath *indexPath = userInfo[@"indexPath"];
+    FirstAndSecondTableView *tableView = userInfo[@"tableView"];
+    
+    //第一层或者第二层的tableView被点击，只可能是二层筛选或者是三层筛选，不可能是一层筛选。因为一层筛选的tableView点击方法是调用thirdTableClick:方法的
+    switch (self.levelType) {
+            
+        case YYBaseFilterTypeDoubleLevel:{//如果是二层筛选，则点击的一定是firstLevelTableView
+            
+            //然后将当前选择的cell信息记录下来，保存在self.indexModel中
+            self.indexModel.filterName = [self.firstLevelElements objectAtIndex:indexPath.row];
+            self.indexModel.index = indexPath.row;
+            
+            //更改数据源
+            self.thirdDataModel.dataSource = [self.secondLevelElements objectAtIndex:indexPath.row];
+            self.thirdDataModel.currentSelectedConditions = [self getThirdDataCurrentSelectedConditions];
+            
+            //刷新表格
+            self.thirdTableView.dataModel = self.thirdDataModel;
+            
+            break;
+        }
+            
+            break;
+        case YYBaseFilterTypeThreeLevel:{//如果是三层筛选，则点击的可能是firstLevelTableView，secondLevelTableView
+            
+            if ([tableView isEqual:self.firstLevelTableView]) {//如果点击的是第一层tableView，那么需要刷新第二层和第三层
+                //然后将当前选择的cell信息记录下来，保存在self.indexModel中
+                self.indexModel.filterName = [self.firstLevelElements objectAtIndex:indexPath.row];
+                self.indexModel.index = indexPath.row;
+                
+                //更改第二层数据源
+                self.secondDataModel.dataSource = [self.secondLevelElements objectAtIndex:indexPath.row];
+                self.secondDataModel.currentSelectCellIndex = 0;
+                //刷新第二层表格
+                self.secondLevelTableView.dataModel = self.secondDataModel;
+                
+                //更改第三层数据源
+                self.thirdDataModel.dataSource = [[self.thirdLevelElements objectAtIndex:indexPath.row] objectAtIndex:0];
+                self.thirdDataModel.currentSelectedConditions = [self getThirdDataCurrentSelectedConditions];
+                //刷新第三层表格
+                self.thirdTableView.dataModel = self.thirdDataModel;
+                
+            } else {//如果点击的是第二层tableView，那么需要刷新第三层显示
+                
+                self.indexModel.subIndex.filterName = [[self.secondLevelElements objectAtIndex:self.indexModel.index] objectAtIndex:indexPath.row];
+                self.indexModel.subIndex.index = indexPath.row;
+                
+                
+                //更改第三层数据源
+                self.thirdDataModel.dataSource = [[self.thirdLevelElements objectAtIndex:self.indexModel.index] objectAtIndex:self.indexModel.subIndex.index];
+                self.thirdDataModel.currentSelectedConditions = [self getThirdDataCurrentSelectedConditions];
+                //刷新第三层表格
+                self.thirdTableView.dataModel = self.thirdDataModel;
+            }
+            
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+
+- (void)thirdTableClick:(NSNotification *)notification {
+    
+//    //得到当前点击的按钮的序号
+//    NSDictionary *userInfo = notification.userInfo;
+//    NSIndexPath *indexPath = userInfo[@"indexPath"];
+//
+//    if (self.multiSelectionEnable) {
+//
+//        //先在当前条件中寻找，如果有此条件则删除，并刷新
+//        NSArray *indexModelArray = [self.currentConditions copy];
+//
+//        for (FilterSelectIndexModel *indexModel in indexModelArray) {
+//            if (indexModel.index == indexPath.row) {
+//
+//                NSInteger index = [indexModelArray indexOfObject:indexModel];
+//
+//                [self.currentConditions removeObjectAtIndex:index];
+//                self.topConditionCollectionView.conditions = self.currentConditions;
+////                [tableView deselectRowAtIndexPath:indexPath animated:YES];
+////                [self.firstLevelTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//                return;
+//            }
+//        }
+//    }
+//
+//
+//    //如果没找到，则将此条件添加到self.currentConditions中去
+//    FilterSelectIndexModel *secondModel = [FilterSelectIndexModel new];
+//    secondModel.filterName = [self.firstLevelElements objectAtIndex:indexPath.row];
+//    secondModel.index = indexPath.row;
+//
+//
+//    switch (self.levelType) {
+//        case YYBaseFilterTypeSingleLevel:
+//            secondModel.subIndex = nil;
+//            break;
+//        case YYBaseFilterTypeDoubleLevel:
+//
+//            break;
+//
+//        case YYBaseFilterTypeThreeLevel:
+//
+//            break;
+//
+//        default:
+//            break;
+//    }
+//
+//
+//    if (!self.multiSelectionEnable) {
+//        [self.currentConditions removeAllObjects];
+//    }
+//
+//    [self.currentConditions addObject:secondModel];
+//
+//    //将当前条件再赋值给头部当前条件collectionView中，刷新collectionView的显示
+//    self.topConditionCollectionView.conditions = self.currentConditions;
+//    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+//
+//    //然后刷新第二层tableView点击的这一行
+//    [self.firstLevelTableView reloadData];
+//
+//    if (self.multiSelectionEnable == NO) {//如果不支持多选，则直接返回
+//        [self.confirmBtn sendActionsForControlEvents:UIControlEventTouchUpInside];
+//    }
+    
+}
+
+
+
 
 #pragma mark - Private Func
 - (UIImage *)createImageWithColor:(UIColor*)color {
@@ -402,6 +664,43 @@
     UIImage *theImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return theImage;
+}
+
+/* 获取第三层tableView的dataModel中的选择情况 */
+- (NSArray *)getThirdDataCurrentSelectedConditions {
+    
+    NSMutableArray *currentSelectedConditions = [NSMutableArray new];
+    
+    for (int i = 0; i<self.thirdDataModel.dataSource.count; i++) {
+        
+        //定义一个标志位
+        BOOL flag = NO;
+        
+        for (FilterSelectIndexModel *indexModel in self.currentConditions) {
+            
+            FilterSelectIndexModel *model = indexModel;
+            if (model.subIndex != nil) {
+                while (1) {
+                    model = model.subIndex;
+                    if (model.subIndex == nil) {
+                        break;
+                    }
+                }
+            }
+            
+            if (model.index == i) {//如果在self.currentConditions中有索引为i的条件则flag置为yes
+                flag = YES;
+            }
+        }
+        
+        if (flag) {
+            [currentSelectedConditions addObject:@(YES)];
+        } else {
+            [currentSelectedConditions addObject:@(NO)];
+        }
+        
+    }
+    return [currentSelectedConditions copy];
 }
 
 
@@ -704,6 +1003,7 @@
 - (ThirdConditionModel *)thirdDataModel {
     if (!_thirdDataModel) {
         _thirdDataModel = [ThirdConditionModel new];
+        _thirdDataModel.multiSelectionEnable = NO;//默认不支持多选
     }
     return _thirdDataModel;
 }

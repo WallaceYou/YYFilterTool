@@ -10,6 +10,9 @@
 
 @interface ThirdConditionModel : NSObject
 
+/** 是否支持多选 */
+@property (nonatomic, assign) BOOL multiSelectionEnable;
+
 /** 当前条件的选中情况 */
 @property (nonatomic, strong) NSArray *currentSelectedConditions;
 

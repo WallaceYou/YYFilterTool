@@ -129,6 +129,38 @@
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    
+    //更改数据源，刷新tableView
+    NSMutableArray *mArray = [NSMutableArray arrayWithArray:self.dataModel.currentSelectedConditions];
+    
+    if (mArray.count == 0) {
+        return;
+    }
+    
+    BOOL selected = [[mArray objectAtIndex:indexPath.row] boolValue];
+    
+    
+    if (self.dataModel.multiSelectionEnable) {//如果支持多选
+        if (selected) {//如果是已经选中的，点击则置为没选中
+            [mArray replaceObjectAtIndex:indexPath.row withObject:@(NO)];
+        } else {//如果是未选中的，则置为已选中
+            [mArray replaceObjectAtIndex:indexPath.row withObject:@(YES)];
+        }
+    } else {//不支持多选
+        //不管选没选中，都置为选中
+        [mArray replaceObjectAtIndex:indexPath.row withObject:@(YES)];
+    }
+    
+    //然后更改数据源
+    self.dataModel.currentSelectedConditions = [mArray copy];
+    
+    //刷新表格
+    [self reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    
+    //告诉外界
+    [[NSNotificationCenter defaultCenter] postNotificationName:ThirdTableViewClick object:nil userInfo:@{@"indexPath":indexPath}];
+    
 //    if (tableView == self.firstLevelTableView) {//如果是点击的是第一层tableView
 //        
 //        if (self.levelType == YYBaseFilterTypeSingleLevel) {//如果是一层筛选

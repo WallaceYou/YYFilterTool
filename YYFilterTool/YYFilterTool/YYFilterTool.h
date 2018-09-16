@@ -24,7 +24,7 @@
 /** 表示上方是否展示已经选择的条件 */
 @property (nonatomic, assign) BOOL topConditionEnable;
 
-/** 是否支持多选 */
+/** 是否支持多选，默认不支持 */
 @property (nonatomic, assign) BOOL multiSelectionEnable;
 
 /** 第一层元素数组，注意：格式为  @[@"a",@"b",@"c"] */

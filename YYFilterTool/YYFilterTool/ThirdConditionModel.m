@@ -10,6 +10,12 @@
 
 @implementation ThirdConditionModel
 
+//- (NSArray *)currentSelectedConditions {
+//    if (_currentSelectedConditions == nil) {
+//        <#statements#>
+//    }
+//}
+
 - (NSString *)selectedBtnHighlightedName {
     
     if (_selectedBtnHighlightedName == nil) {

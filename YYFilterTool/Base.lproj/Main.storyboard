@@ -19,15 +19,23 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Hg-6V-6vi">
-                                <rect key="frame" x="73" y="96" width="46" height="30"/>
+                                <rect key="frame" x="146" y="96" width="46" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="附近"/>
                                 <connections>
                                     <action selector="nearbyBtnClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="UpB-Jy-OLA"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jjs-Sv-bcA">
+                                <rect key="frame" x="234" y="96" width="31" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="区域"/>
+                                <connections>
+                                    <action selector="areaBtnClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="BQA-ZY-DpS"/>
+                                </connections>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3HA-aH-E0D">
-                                <rect key="frame" x="154" y="96" width="31" height="30"/>
+                                <rect key="frame" x="78" y="96" width="31" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="排序"/>
                                 <connections>

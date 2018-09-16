@@ -10,7 +10,7 @@
 
 @implementation ExtensionButton
 
-//按钮太小扩大点击范围
+//按钮太小时（小于44*44）扩大点击范围
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent*)even {
     
     CGRect bounds =self.bounds;

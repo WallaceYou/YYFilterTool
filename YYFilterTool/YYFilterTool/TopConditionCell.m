@@ -95,7 +95,7 @@
 }
 
 - (void)deleteBtnClick:(UIButton *)deleteBtn {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"FilterViewTopCollectionDeleteBtnClick" object:nil userInfo:@{@"cell":self}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:FilterViewTopCollectionDeleteBtnClick object:nil userInfo:@{@"cell":self}];
 }
 
 

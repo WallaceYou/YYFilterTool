@@ -21,7 +21,7 @@
 /** 表示上方是否展示已经选择的条件 */
 @property (nonatomic, assign) BOOL topConditionEnable;
 
-/** 是否支持多选 */
+/** 是否支持多选，默认不支持 */
 @property (nonatomic, assign) BOOL multiSelectionEnable;
 
 /** 第一层元素数组，注意：格式为  @[@"a",@"b",@"c"] */
@@ -31,7 +31,7 @@
 @property (nonatomic, strong) NSArray *secondLevelElements;
 
 /** 第三层元素数组，注意：格式为  @[@[@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"]],@[@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"]],@[@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"]]] */
-@property (nonatomic, strong) NSArray *thirdLevelElement;
+@property (nonatomic, strong) NSArray *thirdLevelElements;
 
 /** 当前选择的所有条件 */
 @property (nonatomic, strong) NSMutableArray<FilterSelectIndexModel *> *currentConditions;

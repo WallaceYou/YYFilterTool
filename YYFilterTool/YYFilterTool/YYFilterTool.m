@@ -39,7 +39,7 @@
 }
 
 - (void)setThirdLevelElement:(NSArray *)thirdLevelElement {
-    self.baseFilter.thirdLevelElement = thirdLevelElement;
+    self.baseFilter.thirdLevelElements = thirdLevelElement;
 }
 
 - (void)setCurrentConditions:(NSMutableArray<FilterSelectIndexModel *> *)currentConditions {

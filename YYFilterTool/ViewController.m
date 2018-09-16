@@ -71,6 +71,43 @@
     
 }
 
+- (IBAction)areaBtnClick:(id)sender {
+    NSMutableArray *firstLevelElements = [NSMutableArray new];
+    NSMutableArray *secondLevelElements = [NSMutableArray new];
+    NSMutableArray *thirdLevelElements = [NSMutableArray new];
+    
+    for (int i = 0; i < 30; i++) {
+        [firstLevelElements addObject:[NSString stringWithFormat:@"市%i",i]];
+        NSMutableArray *elements = [NSMutableArray new];
+        NSMutableArray *elementss = [NSMutableArray new];
+        for (int j = 0; j < random()%30+1; j++) {
+            [elements addObject:[NSString stringWithFormat:@"市%i县%i",i,j]];
+            NSMutableArray *elementsss = [NSMutableArray new];
+            for (int k = 0; k < random()%30+1; k++) {
+                [elementsss addObject:[NSString stringWithFormat:@"市%i县%i镇%i",i,j,k]];
+            }
+            [elementss addObject:elementsss];
+        }
+        [secondLevelElements addObject:elements];
+        [thirdLevelElements addObject:elementss];
+    }
+    
+    self.filterTool.firstLevelElements = firstLevelElements;
+    self.filterTool.secondLevelElements = secondLevelElements;
+    self.filterTool.thirdLevelElement = thirdLevelElements;
+    self.filterTool.levelType = YYBaseFilterTypeThreeLevel;
+    self.filterTool.multiSelectionEnable = YES;
+    self.filterTool.topConditionEnable = YES;
+    
+    self.filterTool.filterComplete = ^(NSArray *filters) {
+        NSLog(@"%@",filters);
+    };
+    
+    [self.filterTool popFilterViewWithStartY:150 startAnimateComplete:nil closeAnimateComplete:^{
+        NSLog(@"hehe");
+    }];
+}
+
 - (YYFilterTool *)filterTool {
     if (!_filterTool) {
         _filterTool = [YYFilterTool shareInstance];

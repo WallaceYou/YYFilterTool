@@ -30,6 +30,7 @@
         //启动懒加载
         self.indexLb.hidden = NO;
         self.conditionNameLb.hidden = NO;
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     return self;
 }
@@ -84,7 +85,6 @@
 
 
 
-
 @interface FirstAndSecondTableView () <UITableViewDelegate, UITableViewDataSource>
 
 @end
@@ -133,28 +133,24 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    //先得到上一个点击的cell，并将背景色置为灰色
+    //1.先得到上一个点击的cell，并将背景色置为灰色
     UITableViewCell *lastCell = [self cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.dataModel.currentSelectCellIndex inSection:0]];
     lastCell.backgroundColor = BgGreyColor;
-    
-    //然后将点击的cell的背景变为白色
+
+    //2.然后将点击的cell的背景变为白色
     UITableViewCell *cell = [self cellForRowAtIndexPath:indexPath];
     cell.backgroundColor = [UIColor whiteColor];
     
-    //将当前点击的index记录在dataModel中
+    //3.再将当前点击的index记录在dataModel中，这样的话在拖动时才不会导致混乱
     self.dataModel.currentSelectCellIndex = indexPath.row;
     
-    //然后刷新数据
-    [self reloadData];
+    //4.告诉外界
+    [[NSNotificationCenter defaultCenter] postNotificationName:FirstAndSecondTableViewClick object:nil userInfo:@{@"indexPath":indexPath,@"tableView":self}];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return TabelViewCellHeight;
 }
-
-
-
-
 
 
 
