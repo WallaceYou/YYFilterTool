@@ -8,6 +8,18 @@
 
 #import "FilterSelectIndexModel.h"
 
+@interface FilterSelectIndexModel () <NSCopying>
+
+@end
+
 @implementation FilterSelectIndexModel
+
+- (id)copyWithZone:(NSZone *)zone {
+    FilterSelectIndexModel *indexModel = [FilterSelectIndexModel new];
+    indexModel.filterName = self.filterName;
+    indexModel.index = self.index;
+    indexModel.subIndex = [self.subIndex copy];
+    return indexModel;
+}
 
 @end

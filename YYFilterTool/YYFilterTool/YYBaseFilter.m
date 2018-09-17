@@ -546,15 +546,18 @@
         case YYBaseFilterTypeThreeLevel:{//如果是三层筛选，则点击的可能是firstLevelTableView，secondLevelTableView
             
             if ([tableView isEqual:self.firstLevelTableView]) {//如果点击的是第一层tableView，那么需要刷新第二层和第三层
-                //然后将当前选择的cell信息记录下来，保存在self.indexModel中
-                self.indexModel.filterName = [self.firstLevelElements objectAtIndex:indexPath.row];
-                self.indexModel.index = indexPath.row;
                 
                 //更改第二层数据源
                 self.secondDataModel.dataSource = [self.secondLevelElements objectAtIndex:indexPath.row];
                 self.secondDataModel.currentSelectCellIndex = 0;
                 //刷新第二层表格
                 self.secondLevelTableView.dataModel = self.secondDataModel;
+                
+                //然后将当前选择的cell信息记录下来，保存在self.indexModel中
+                self.indexModel.filterName = [self.firstLevelElements objectAtIndex:indexPath.row];
+                self.indexModel.index = indexPath.row;
+                self.indexModel.subIndex.filterName = [[self.secondLevelElements objectAtIndex:self.indexModel.index] objectAtIndex:0];
+                self.indexModel.subIndex.index = 0;
                 
                 //更改第三层数据源
                 self.thirdDataModel.dataSource = [[self.thirdLevelElements objectAtIndex:indexPath.row] objectAtIndex:0];
@@ -585,70 +588,115 @@
 
 - (void)thirdTableClick:(NSNotification *)notification {
     
-//    //得到当前点击的按钮的序号
-//    NSDictionary *userInfo = notification.userInfo;
-//    NSIndexPath *indexPath = userInfo[@"indexPath"];
-//
-//    if (self.multiSelectionEnable) {
-//
-//        //先在当前条件中寻找，如果有此条件则删除，并刷新
-//        NSArray *indexModelArray = [self.currentConditions copy];
-//
-//        for (FilterSelectIndexModel *indexModel in indexModelArray) {
-//            if (indexModel.index == indexPath.row) {
-//
-//                NSInteger index = [indexModelArray indexOfObject:indexModel];
-//
-//                [self.currentConditions removeObjectAtIndex:index];
-//                self.topConditionCollectionView.conditions = self.currentConditions;
-////                [tableView deselectRowAtIndexPath:indexPath animated:YES];
-////                [self.firstLevelTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//                return;
-//            }
-//        }
-//    }
-//
-//
-//    //如果没找到，则将此条件添加到self.currentConditions中去
-//    FilterSelectIndexModel *secondModel = [FilterSelectIndexModel new];
-//    secondModel.filterName = [self.firstLevelElements objectAtIndex:indexPath.row];
-//    secondModel.index = indexPath.row;
-//
-//
-//    switch (self.levelType) {
-//        case YYBaseFilterTypeSingleLevel:
-//            secondModel.subIndex = nil;
-//            break;
-//        case YYBaseFilterTypeDoubleLevel:
-//
-//            break;
-//
-//        case YYBaseFilterTypeThreeLevel:
-//
-//            break;
-//
-//        default:
-//            break;
-//    }
-//
-//
+    //得到当前点击的按钮的序号
+    NSDictionary *userInfo = notification.userInfo;
+    NSIndexPath *indexPath = userInfo[@"indexPath"];
+
+    if (self.multiSelectionEnable) {
+
+        //先在当前条件中寻找，如果有此条件则删除，并刷新
+        NSArray *indexModelArray = [self.currentConditions copy];
+        
+        BOOL flag = NO;
+        
+        for (FilterSelectIndexModel *indexModel in indexModelArray) {
+            
+            switch (self.levelType) {
+                case YYBaseFilterTypeSingleLevel:
+                    
+                    if (indexModel.index == indexPath.row) {
+                        flag = YES;
+                    }
+                    break;
+                    
+                case YYBaseFilterTypeDoubleLevel:
+                    
+                    if (indexModel.index == self.indexModel.index && indexModel.subIndex.index == indexPath.row) {
+                        flag = YES;
+                    }
+                    break;
+                    
+                case YYBaseFilterTypeThreeLevel:
+                    
+                    if (indexModel.index == self.indexModel.index && indexModel.subIndex.index == self.indexModel.subIndex.index && indexModel.subIndex.subIndex.index == indexPath.row) {
+                        flag = YES;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            
+            //说明在当前已选择的条件中找到了此条件，则删除，并刷新
+            if (flag) {
+                NSInteger index = [indexModelArray indexOfObject:indexModel];
+                
+                [self.currentConditions removeObjectAtIndex:index];
+                self.topConditionCollectionView.conditions = self.currentConditions;
+                return;
+            }
+        }
+    }
+
+
+    //如果没找到，则将此条件添加到self.currentConditions中去
+    switch (self.levelType) {
+        case YYBaseFilterTypeSingleLevel:{
+            
+            FilterSelectIndexModel *selectModel = [FilterSelectIndexModel new];
+            selectModel.filterName = [self.firstLevelElements objectAtIndex:indexPath.row];
+            selectModel.index = indexPath.row;
+            selectModel.subIndex = nil;
+            [self.currentConditions addObject:selectModel];
+            
+            break;
+        }
+        case YYBaseFilterTypeDoubleLevel:{
+            
+            FilterSelectIndexModel *secondModel = [FilterSelectIndexModel new];
+            secondModel.filterName = [[self.secondLevelElements objectAtIndex:self.indexModel.index] objectAtIndex:indexPath.row];
+            secondModel.index = indexPath.row;
+            secondModel.subIndex = nil;
+            
+            self.indexModel.subIndex = secondModel;
+            
+            [self.currentConditions addObject:[self.indexModel copy]];
+
+            break;
+        }
+
+        case YYBaseFilterTypeThreeLevel:{
+            
+            FilterSelectIndexModel *thirdModel = [FilterSelectIndexModel new];
+            thirdModel.filterName = [[[self.thirdLevelElements objectAtIndex:self.indexModel.index] objectAtIndex:self.indexModel.subIndex.index] objectAtIndex:indexPath.row];
+            thirdModel.index = indexPath.row;
+            thirdModel.subIndex = nil;
+            
+            self.indexModel.subIndex.subIndex = thirdModel;
+            [self.currentConditions addObject:[self.indexModel copy]];
+
+            break;
+        }
+        default:
+            break;
+    }
+
+
 //    if (!self.multiSelectionEnable) {
 //        [self.currentConditions removeAllObjects];
 //    }
 //
 //    [self.currentConditions addObject:secondModel];
-//
-//    //将当前条件再赋值给头部当前条件collectionView中，刷新collectionView的显示
-//    self.topConditionCollectionView.conditions = self.currentConditions;
+
+    //将当前条件再赋值给头部当前条件collectionView中，刷新collectionView的显示
+    self.topConditionCollectionView.conditions = self.currentConditions;
 //    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-//
-//    //然后刷新第二层tableView点击的这一行
+
+    //然后刷新第二层tableView点击的这一行
 //    [self.firstLevelTableView reloadData];
-//
-//    if (self.multiSelectionEnable == NO) {//如果不支持多选，则直接返回
-//        [self.confirmBtn sendActionsForControlEvents:UIControlEventTouchUpInside];
-//    }
-    
+
+    if (self.multiSelectionEnable == NO) {//如果不支持多选，则直接返回
+        [self.confirmBtn sendActionsForControlEvents:UIControlEventTouchUpInside];
+    }
 }
 
 
@@ -678,18 +726,29 @@
         
         for (FilterSelectIndexModel *indexModel in self.currentConditions) {
             
-            FilterSelectIndexModel *model = indexModel;
-            if (model.subIndex != nil) {
-                while (1) {
-                    model = model.subIndex;
-                    if (model.subIndex == nil) {
-                        break;
+            switch (self.levelType) {
+                case YYBaseFilterTypeSingleLevel:
+                    
+                    if (indexModel.index == i) {//如果在self.currentConditions中有索引为i的条件则flag置为yes
+                        flag = YES;
                     }
-                }
-            }
-            
-            if (model.index == i) {//如果在self.currentConditions中有索引为i的条件则flag置为yes
-                flag = YES;
+                    break;
+                    
+                case YYBaseFilterTypeDoubleLevel:
+                    
+                    if (indexModel.index == self.indexModel.index && indexModel.subIndex.index == i) {
+                        flag = YES;
+                    }
+                    break;
+                    
+                case YYBaseFilterTypeThreeLevel:
+                    
+                    if (indexModel.index == self.indexModel.index && indexModel.subIndex.index == self.indexModel.subIndex.index && indexModel.subIndex.subIndex.index == i) {
+                        flag = YES;
+                    }
+                    break;
+                default:
+                    break;
             }
         }
         
@@ -701,6 +760,20 @@
         
     }
     return [currentSelectedConditions copy];
+}
+
+/* 获得indexModel最里层的indexModel */
+- (FilterSelectIndexModel *)getInnermostIndexModelWith:(FilterSelectIndexModel *)indexModel {
+    FilterSelectIndexModel *model = indexModel;
+    if (model.subIndex != nil) {
+        while (1) {
+            model = model.subIndex;
+            if (model.subIndex == nil) {
+                break;
+            }
+        }
+    }
+    return model;
 }
 
 
