@@ -11,8 +11,8 @@
 
 @interface FirstAndSecondConditionModel : NSObject
 
-/** 当前选中的条件个数 */
-@property (nonatomic, assign) NSInteger currentSelectConditionsCount;
+/** 当前列表中每个cell里选中的条件个数 */
+@property (nonatomic, strong) NSArray *currentSelectConditionsCounts;
 
 /** 一级或者二级的数据源 */
 @property (nonatomic, strong) NSArray *dataSource;

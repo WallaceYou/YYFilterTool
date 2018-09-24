@@ -18,14 +18,16 @@
 
 @interface YYBaseFilter ()
 
-/* 顶部透明的点击可以收起筛选视图的背景 */
+/* 上半部分透明的点击可以收起的背景 */
 @property (nonatomic, strong) UIButton *topBgClearButton;
 
-/* 点击可以收起筛选视图的黑色背景视图 */
+/* 下半部分点击可以收起筛选视图的黑色背景 */
 @property (nonatomic, strong) UIButton *shadowBgButton;
 
-
+/* 中间的筛选视图 */
 @property (nonatomic, strong) UIView *filterView;
+
+//以下6个视图是筛选视图中的子视图
 
 /* 头部的条件框collectionView */
 @property (nonatomic, strong) TopConditionCollectionView *topConditionCollectionView;
@@ -39,7 +41,7 @@
 /* 二级tableView */
 @property (nonatomic, strong) FirstAndSecondTableView *secondLevelTableView;
 
-/* 三级tableView */
+/* 三级tableView（可以点击进行勾选的那个tableView） */
 @property (nonatomic, strong) ThirdTableView *thirdTableView;
 
 /* 确定按钮 */
@@ -143,7 +145,7 @@
     _secondLevelTableView = [FirstAndSecondTableView new];
     [_filterView addSubview:_secondLevelTableView];
     
-    
+    //三级
     _thirdTableView = [ThirdTableView new];
     [_filterView addSubview:_thirdTableView];
 }
@@ -279,39 +281,41 @@
     self.secondLevelTableView.frame = CGRectMake(firstTableWidth, 0, secondTableWidth, 0);
     self.thirdTableView.frame = CGRectMake(firstTableWidth+secondTableWidth, 0, thirdTableWidth, 0);
     self.confirmBtn.frame = CGRectMake(0, 0, kWindowW, 0);
+    self.confirmBtn.titleLabel.alpha = 0.0;
+    [self.confirmBtn layoutIfNeeded];
     
     self.shadowBgButton.frame = CGRectMake(0, startY, kWindowW, kWindowH - startY);
-    self.shadowBgButton.alpha = 0.0;
     
-    //如果是多于一层的筛选，则将第一层的第一个cell的颜色置为白色（即默认已经选中了第一个）
-    //    if (self.levelType != YYBaseFilterTypeSingleLevel) {
-    //        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    //        [self tableView:self.firstLevelTableView didSelectRowAtIndexPath:indexPath];
-    //    }
     
-    //刷新数据显示
+    //默认数据的展示
     if (self.levelType == YYBaseFilterTypeSingleLevel) {
         
         //更改第三层tableView数据源，并刷新第三层表格（一层筛选时，没有前两层tableView）
         self.thirdDataModel.dataSource = self.firstLevelElements;
+        //默认初始化所有条件都为未点击状态
+        self.thirdDataModel.currentSelectedConditions = [self getThirdDataCurrentSelectedConditions];
+        //刷新表格
         self.thirdTableView.dataModel = self.thirdDataModel;
         
     } else if (self.levelType == YYBaseFilterTypeDoubleLevel) {
         
         //更改第一层tableView数据源，并刷新第一层表格
         self.firstDataModel.dataSource = self.firstLevelElements;
+        
+        //默认没有条件被选中
+        NSMutableArray *currentSelectConditionsCounts = [NSMutableArray new];
+        for (int i = 0; i < self.firstDataModel.dataSource.count; i++) {
+            [currentSelectConditionsCounts addObject:@(0)];
+        }
+        self.firstDataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts copy];
         self.firstLevelTableView.dataModel = self.firstDataModel;
+        
+        
         
         //更改第三层tableView数据源，默认显示第一行数据
         self.thirdDataModel.dataSource = [self.secondLevelElements objectAtIndex:0];
         
-        //如果有设置最后一层，则默认初始化所有条件都为未点击状态
-//        NSMutableArray *currentSelectConditions = [NSMutableArray new];
-//        for (int i = 0; i<self.thirdDataModel.dataSource.count; i++) {
-//            [currentSelectConditions addObject:@(NO)];
-//        }
-//        self.thirdDataModel.currentSelectedConditions = [currentSelectConditions copy];
-        
+        //默认初始化所有条件都为未点击状态
         self.thirdDataModel.currentSelectedConditions = [self getThirdDataCurrentSelectedConditions];
         
         //刷新第三层表格
@@ -327,22 +331,26 @@
     } else {
         
         self.firstDataModel.dataSource = self.firstLevelElements;
+        
+        //默认没有条件被选中
+        NSMutableArray *currentSelectConditionsCounts = [NSMutableArray new];
+        for (int i = 0; i < self.firstDataModel.dataSource.count; i++) {
+            [currentSelectConditionsCounts addObject:@(0)];
+        }
+        self.firstDataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts copy];
         self.firstLevelTableView.dataModel = self.firstDataModel;
         
         //默认显示第一行数据
         self.secondDataModel.dataSource = [self.secondLevelElements objectAtIndex:0];
+        
+        //默认没有条件被选中
+        self.secondDataModel.currentSelectConditionsCounts = [self getIndexCountForSecondModel];
         self.secondLevelTableView.dataModel = self.secondDataModel;
         
         //默认显示第一行数据
         self.thirdDataModel.dataSource = [[self.thirdLevelElements objectAtIndex:0] objectAtIndex:0];
         
-//        //如果有设置最后一层，则默认初始化所有条件都为未点击状态
-//        NSMutableArray *currentSelectConditions = [NSMutableArray new];
-//        for (int i = 0; i<self.thirdDataModel.dataSource.count; i++) {
-//            [currentSelectConditions addObject:@(NO)];
-//        }
-//        self.thirdDataModel.currentSelectedConditions = [currentSelectConditions copy];
-        
+        //默认初始化所有条件都为未点击状态
         self.thirdDataModel.currentSelectedConditions = [self getThirdDataCurrentSelectedConditions];
         self.thirdTableView.dataModel = self.thirdDataModel;
         
@@ -370,7 +378,7 @@
         self.secondLevelTableView.frame = CGRectMake(firstTableWidth, topColletionHeight, secondTableWidth, tableViewHeight);
         self.thirdTableView.frame = CGRectMake(firstTableWidth+secondTableWidth, topColletionHeight, thirdTableWidth, tableViewHeight);
         self.confirmBtn.frame = CGRectMake(0, topColletionHeight+tableViewHeight, kWindowW, confirmBtnHeight);
-        
+        self.confirmBtn.titleLabel.alpha = 1.0;
         self.shadowBgButton.alpha = 0.8;
         
     } completion:^(BOOL finished) {
@@ -431,9 +439,10 @@
         self.secondLevelTableView.frame = CGRectMake(firstTableWidth, 0, secondTableWidth, 0);
         self.thirdTableView.frame = CGRectMake(firstTableWidth+secondTableWidth, 0, thirdTableWidth, 0);
         self.confirmBtn.frame = CGRectMake(0, 0, kWindowW, 0);
+        self.confirmBtn.titleLabel.alpha = 0.0;
         self.filterView.frame = CGRectMake(0, self.startY, kWindowW, 0);
-        
         self.shadowBgButton.alpha = 0.0;
+        
     } completion:^(BOOL finished) {
         if (self.filterView.superview) {
             [self.filterView removeFromSuperview];
@@ -547,17 +556,18 @@
             
             if ([tableView isEqual:self.firstLevelTableView]) {//如果点击的是第一层tableView，那么需要刷新第二层和第三层
                 
-                //更改第二层数据源
-                self.secondDataModel.dataSource = [self.secondLevelElements objectAtIndex:indexPath.row];
-                self.secondDataModel.currentSelectCellIndex = 0;
-                //刷新第二层表格
-                self.secondLevelTableView.dataModel = self.secondDataModel;
-                
                 //然后将当前选择的cell信息记录下来，保存在self.indexModel中
                 self.indexModel.filterName = [self.firstLevelElements objectAtIndex:indexPath.row];
                 self.indexModel.index = indexPath.row;
                 self.indexModel.subIndex.filterName = [[self.secondLevelElements objectAtIndex:self.indexModel.index] objectAtIndex:0];
                 self.indexModel.subIndex.index = 0;
+                
+                //更改第二层数据源
+                self.secondDataModel.dataSource = [self.secondLevelElements objectAtIndex:indexPath.row];
+                self.secondDataModel.currentSelectConditionsCounts = [self getIndexCountForSecondModel];
+                self.secondDataModel.currentSelectCellIndex = 0;
+                //刷新第二层表格
+                self.secondLevelTableView.dataModel = self.secondDataModel;
                 
                 //更改第三层数据源
                 self.thirdDataModel.dataSource = [[self.thirdLevelElements objectAtIndex:indexPath.row] objectAtIndex:0];
@@ -613,6 +623,14 @@
                     
                     if (indexModel.index == self.indexModel.index && indexModel.subIndex.index == indexPath.row) {
                         flag = YES;
+                        
+                        //刷新第一层相应位置角标显示，角标减一
+                        NSMutableArray *currentSelectConditionsCounts = [NSMutableArray arrayWithArray:self.firstDataModel.currentSelectConditionsCounts];
+                        NSInteger indexCount = [[currentSelectConditionsCounts objectAtIndex:self.indexModel.index] integerValue];
+                        [currentSelectConditionsCounts replaceObjectAtIndex:self.indexModel.index withObject:@(--indexCount)];
+                        self.firstDataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts copy];
+                        self.firstLevelTableView.dataModel = self.firstDataModel;
+                        
                     }
                     break;
                     
@@ -660,6 +678,16 @@
             self.indexModel.subIndex = secondModel;
             
             [self.currentConditions addObject:[self.indexModel copy]];
+            
+            
+            
+            //刷新角标显示
+            NSMutableArray *currentSelectConditionsCounts = [NSMutableArray arrayWithArray:self.firstDataModel.currentSelectConditionsCounts];
+            NSInteger indexCount = [[currentSelectConditionsCounts objectAtIndex:self.indexModel.index] integerValue];
+            [currentSelectConditionsCounts replaceObjectAtIndex:self.indexModel.index withObject:@(++indexCount)];
+            self.firstDataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts copy];
+            self.firstLevelTableView.dataModel = self.firstDataModel;
+            
 
             break;
         }
@@ -761,6 +789,29 @@
     }
     return [currentSelectedConditions copy];
 }
+
+/* 获取三层筛选时，第二层tableView的条件选择情况（即角标个数） */
+- (NSArray *)getIndexCountForSecondModel {
+    
+    NSMutableArray *currentSelectConditionsCounts = [NSMutableArray new];
+    for (int i = 0; i < self.secondDataModel.dataSource.count; i++) {
+        
+        NSInteger selectCount = 0;
+        
+        for (FilterSelectIndexModel *indexModel in self.currentConditions) {
+            
+            if (self.indexModel.index == indexModel.index && indexModel.subIndex.index == i) {
+                selectCount ++;
+            }
+        }
+        
+        [currentSelectConditionsCounts addObject:@(selectCount)];
+    }
+    
+    return [currentSelectConditionsCounts copy];
+}
+
+
 
 /* 获得indexModel最里层的indexModel */
 - (FilterSelectIndexModel *)getInnermostIndexModelWith:(FilterSelectIndexModel *)indexModel {

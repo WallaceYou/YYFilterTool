@@ -62,9 +62,9 @@
         
         [self.contentView addSubview:indexBgView];
         [indexBgView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.right.mas_equalTo(-5);
+            make.right.mas_equalTo(-7);
             make.size.mas_equalTo(CGSizeMake(15, 15));
-            make.top.mas_equalTo(5);
+            make.top.mas_equalTo(10);
         }];
         self.indexBgView = indexBgView;
         
@@ -121,9 +121,11 @@
     
     FirstAndSecondConditionListCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FirstAndSecondConditionListCell"];
     
+    NSInteger currentSelectConditionsCount = [[self.dataModel.currentSelectConditionsCounts objectAtIndex:indexPath.row] integerValue];
+    
     cell.conditionNameLb.text = [self.dataModel.dataSource objectAtIndex:indexPath.row];
-    cell.indexBgView.hidden = !(self.dataModel.currentSelectConditionsCount > 0);
-    cell.indexLb.text = [NSString stringWithFormat:@"%ld",self.dataModel.currentSelectConditionsCount];
+    cell.indexBgView.hidden = !(currentSelectConditionsCount > 0);
+    cell.indexLb.text = [NSString stringWithFormat:@"%ld",currentSelectConditionsCount];
     cell.backgroundColor = indexPath.row == self.dataModel.currentSelectCellIndex?[UIColor whiteColor]:BgGreyColor;
     return cell;
 }

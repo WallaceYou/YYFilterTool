@@ -155,7 +155,7 @@
     self.dataModel.currentSelectedConditions = [mArray copy];
     
     //刷新表格
-    [self reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    [self reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     
     //告诉外界
     [[NSNotificationCenter defaultCenter] postNotificationName:ThirdTableViewClick object:nil userInfo:@{@"indexPath":indexPath}];

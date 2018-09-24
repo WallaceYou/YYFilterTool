@@ -25,6 +25,24 @@
     self.view.backgroundColor = [UIColor greenColor];
 }
 
+
+- (IBAction)sortbyBtnClick:(id)sender {
+    
+    self.filterTool.firstLevelElements = @[@"智能排序",@"离我最近",@"好评优先",@"人气最高"];
+    self.filterTool.multiSelectionEnable = YES;
+    self.filterTool.topConditionEnable = YES;
+    
+    self.filterTool.filterComplete = ^(NSArray *filters) {
+        NSLog(@"%@",filters);
+    };
+    
+    [self.filterTool popFilterViewWithStartY:150 startAnimateComplete:nil closeAnimateComplete:^{
+        NSLog(@"关闭回调");
+    }];
+    
+}
+
+
 - (IBAction)nearbyBtnClick:(id)sender {
     
     NSMutableArray *firstLevelElements = [NSMutableArray new];
@@ -50,23 +68,7 @@
     };
     
     [self.filterTool popFilterViewWithStartY:150 startAnimateComplete:nil closeAnimateComplete:^{
-        NSLog(@"hehe");
-    }];
-    
-}
-
-- (IBAction)sortbyBtnClick:(id)sender {
-    
-    self.filterTool.firstLevelElements = @[@"智能排序",@"离我最近",@"好评优先",@"人气最高"];
-//    self.filterTool.multiSelectionEnable = YES;
-    self.filterTool.topConditionEnable = YES;
-    
-    self.filterTool.filterComplete = ^(NSArray *filters) {
-        NSLog(@"%@",filters);
-    };
-    
-    [self.filterTool popFilterViewWithStartY:150 startAnimateComplete:nil closeAnimateComplete:^{
-        NSLog(@"hehe");
+        NSLog(@"关闭回调");
     }];
     
 }
@@ -104,7 +106,7 @@
     };
     
     [self.filterTool popFilterViewWithStartY:150 startAnimateComplete:nil closeAnimateComplete:^{
-        NSLog(@"hehe");
+        NSLog(@"关闭回调");
     }];
 }
 
