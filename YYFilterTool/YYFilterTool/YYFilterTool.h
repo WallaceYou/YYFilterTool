@@ -54,4 +54,7 @@
 /** 单例对象 */
 + (instancetype)shareInstance;
 
+/** 获得indexModel最里层的indexModel */
++ (FilterSelectIndexModel *)getInnermostIndexModelWith:(FilterSelectIndexModel *)indexModel;
+
 @end

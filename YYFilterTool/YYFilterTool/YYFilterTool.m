@@ -69,6 +69,20 @@
     return tool;
 }
 
+/* 获得indexModel最里层的indexModel */
++ (FilterSelectIndexModel *)getInnermostIndexModelWith:(FilterSelectIndexModel *)indexModel {
+    FilterSelectIndexModel *model = indexModel;
+    if (model.subIndex != nil) {
+        while (1) {
+            model = model.subIndex;
+            if (model.subIndex == nil) {
+                break;
+            }
+        }
+    }
+    return model;
+}
+
 - (void)popFilterViewWithStartY:(CGFloat)startY startAnimateComplete:(void (^)(void))startAnimateComplete closeAnimateComplete:(void (^)(void))closeAnimateComplete {
     
     [self.baseFilter popFilterViewWithStartY:startY startAnimateComplete:startAnimateComplete closeAnimateComplete:^{

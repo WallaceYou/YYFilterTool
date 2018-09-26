@@ -630,12 +630,7 @@ typedef NS_ENUM(NSUInteger, PolicyType) {
                         flag = YES;
                         
                         //刷新第一层相应位置角标显示，角标减一
-                        NSMutableArray *currentSelectConditionsCounts = [NSMutableArray arrayWithArray:self.firstDataModel.currentSelectConditionsCounts];
-                        NSInteger indexCount = [[currentSelectConditionsCounts objectAtIndex:self.indexModel.index] integerValue];
-                        [currentSelectConditionsCounts replaceObjectAtIndex:self.indexModel.index withObject:@(--indexCount)];
-                        self.firstDataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts copy];
-                        self.firstLevelTableView.dataModel = self.firstDataModel;
-                        
+                        [self changeIndexCountForTableView:self.firstLevelTableView policyType:PolicyTypeSubtraction];
                     }
                     break;
                     
@@ -645,18 +640,10 @@ typedef NS_ENUM(NSUInteger, PolicyType) {
                         flag = YES;
                         
                         //刷新第一层相应位置角标显示，角标减一
-                        NSMutableArray *currentSelectConditionsCounts = [NSMutableArray arrayWithArray:self.firstDataModel.currentSelectConditionsCounts];
-                        NSInteger indexCount = [[currentSelectConditionsCounts objectAtIndex:self.indexModel.index] integerValue];
-                        [currentSelectConditionsCounts replaceObjectAtIndex:self.indexModel.index withObject:@(--indexCount)];
-                        self.firstDataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts copy];
-                        self.firstLevelTableView.dataModel = self.firstDataModel;
+                        [self changeIndexCountForTableView:self.firstLevelTableView policyType:PolicyTypeSubtraction];
                         
                         //刷新第二层相应位置角标显示，角标减一
-                        NSMutableArray *currentSelectConditionsCounts2 = [NSMutableArray arrayWithArray:self.secondDataModel.currentSelectConditionsCounts];
-                        NSInteger indexCount2 = [[currentSelectConditionsCounts2 objectAtIndex:self.indexModel.subIndex.index] integerValue];
-                        [currentSelectConditionsCounts2 replaceObjectAtIndex:self.indexModel.subIndex.index withObject:@(--indexCount2)];
-                        self.secondDataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts2 copy];
-                        self.secondLevelTableView.dataModel = self.secondDataModel;
+                        [self changeIndexCountForTableView:self.secondLevelTableView policyType:PolicyTypeSubtraction];
                         
                     }
                     break;
@@ -696,19 +683,10 @@ typedef NS_ENUM(NSUInteger, PolicyType) {
             secondModel.subIndex = nil;
             
             self.indexModel.subIndex = secondModel;
-            
             [self.currentConditions addObject:[self.indexModel copy]];
             
-            
-            
             //刷新第一层相应位置角标显示，角标加一
-            NSMutableArray *currentSelectConditionsCounts = [NSMutableArray arrayWithArray:self.firstDataModel.currentSelectConditionsCounts];
-            NSInteger indexCount = [[currentSelectConditionsCounts objectAtIndex:self.indexModel.index] integerValue];
-            [currentSelectConditionsCounts replaceObjectAtIndex:self.indexModel.index withObject:@(++indexCount)];
-            self.firstDataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts copy];
-            self.firstLevelTableView.dataModel = self.firstDataModel;
-            
-
+            [self changeIndexCountForTableView:self.firstLevelTableView policyType:PolicyTypeAddition];
             break;
         }
 
@@ -723,18 +701,10 @@ typedef NS_ENUM(NSUInteger, PolicyType) {
             [self.currentConditions addObject:[self.indexModel copy]];
             
             //刷新第一层相应位置角标显示，角标加一
-            NSMutableArray *currentSelectConditionsCounts = [NSMutableArray arrayWithArray:self.firstDataModel.currentSelectConditionsCounts];
-            NSInteger indexCount = [[currentSelectConditionsCounts objectAtIndex:self.indexModel.index] integerValue];
-            [currentSelectConditionsCounts replaceObjectAtIndex:self.indexModel.index withObject:@(++indexCount)];
-            self.firstDataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts copy];
-            self.firstLevelTableView.dataModel = self.firstDataModel;
+            [self changeIndexCountForTableView:self.firstLevelTableView policyType:PolicyTypeAddition];
             
             //刷新第二层相应位置角标显示，角标加一
-            NSMutableArray *currentSelectConditionsCounts2 = [NSMutableArray arrayWithArray:self.secondDataModel.currentSelectConditionsCounts];
-            NSInteger indexCount2 = [[currentSelectConditionsCounts2 objectAtIndex:self.indexModel.subIndex.index] integerValue];
-            [currentSelectConditionsCounts2 replaceObjectAtIndex:self.indexModel.subIndex.index withObject:@(++indexCount2)];
-            self.secondDataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts2 copy];
-            self.secondLevelTableView.dataModel = self.secondDataModel;
+            [self changeIndexCountForTableView:self.secondLevelTableView policyType:PolicyTypeAddition];
             
             
             break;
@@ -846,24 +816,26 @@ typedef NS_ENUM(NSUInteger, PolicyType) {
     return [currentSelectConditionsCounts copy];
 }
 
-/* 增加或者减少第一层或者第二层tableView右上角的角标个数 */
-- (void)changeIndexCountForTableView:(UITableView *)tableView policy: {
+/* 增加或者减少第一层或者第二层tableView右上角的角标个数，policyType代表加法还是减法 */
+- (void)changeIndexCountForTableView:(FirstAndSecondTableView *)tableView policyType:(PolicyType)policyType {
     
-}
-
-
-/* 获得indexModel最里层的indexModel */
-- (FilterSelectIndexModel *)getInnermostIndexModelWith:(FilterSelectIndexModel *)indexModel {
-    FilterSelectIndexModel *model = indexModel;
-    if (model.subIndex != nil) {
-        while (1) {
-            model = model.subIndex;
-            if (model.subIndex == nil) {
-                break;
-            }
-        }
-    }
-    return model;
+    NSInteger selectIndex;
+    FirstAndSecondConditionModel *dataModel = nil;
+    
+    if ([tableView isEqual:self.firstLevelTableView]) {
+        selectIndex = self.indexModel.index;
+        dataModel = self.firstDataModel;
+    } else if ([tableView isEqual:self.secondLevelTableView]) {
+        selectIndex = self.indexModel.subIndex.index;
+        dataModel = self.secondDataModel;
+    } else return;
+    
+    //刷新第一层相应位置角标显示，角标减一
+    NSMutableArray *currentSelectConditionsCounts = [NSMutableArray arrayWithArray:dataModel.currentSelectConditionsCounts];
+    NSInteger indexCount = [[currentSelectConditionsCounts objectAtIndex:selectIndex] integerValue];
+    [currentSelectConditionsCounts replaceObjectAtIndex:selectIndex withObject:@(policyType == PolicyTypeAddition?(++indexCount):(--indexCount))];
+    dataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts copy];
+    tableView.dataModel = dataModel;
 }
 
 
