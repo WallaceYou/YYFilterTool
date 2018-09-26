@@ -58,12 +58,12 @@
         
         UIView *indexBgView = [UIView new];
         indexBgView.backgroundColor = BrightBlueColor;
-        indexBgView.layer.cornerRadius = 7.5;
+        indexBgView.layer.cornerRadius = 8;
         
         [self.contentView addSubview:indexBgView];
         [indexBgView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.mas_equalTo(-7);
-            make.size.mas_equalTo(CGSizeMake(15, 15));
+            make.size.mas_equalTo(CGSizeMake(16, 16));
             make.top.mas_equalTo(10);
         }];
         self.indexBgView = indexBgView;

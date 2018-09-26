@@ -15,6 +15,11 @@
 #import "ConditionListCell.h"
 #import "ConditionListModel.h"
 
+typedef NS_ENUM(NSUInteger, PolicyType) {
+    PolicyTypeAddition,
+    PolicyTypeSubtraction,
+};
+
 
 @interface YYBaseFilter ()
 
@@ -638,6 +643,21 @@
                     
                     if (indexModel.index == self.indexModel.index && indexModel.subIndex.index == self.indexModel.subIndex.index && indexModel.subIndex.subIndex.index == indexPath.row) {
                         flag = YES;
+                        
+                        //刷新第一层相应位置角标显示，角标减一
+                        NSMutableArray *currentSelectConditionsCounts = [NSMutableArray arrayWithArray:self.firstDataModel.currentSelectConditionsCounts];
+                        NSInteger indexCount = [[currentSelectConditionsCounts objectAtIndex:self.indexModel.index] integerValue];
+                        [currentSelectConditionsCounts replaceObjectAtIndex:self.indexModel.index withObject:@(--indexCount)];
+                        self.firstDataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts copy];
+                        self.firstLevelTableView.dataModel = self.firstDataModel;
+                        
+                        //刷新第二层相应位置角标显示，角标减一
+                        NSMutableArray *currentSelectConditionsCounts2 = [NSMutableArray arrayWithArray:self.secondDataModel.currentSelectConditionsCounts];
+                        NSInteger indexCount2 = [[currentSelectConditionsCounts2 objectAtIndex:self.indexModel.subIndex.index] integerValue];
+                        [currentSelectConditionsCounts2 replaceObjectAtIndex:self.indexModel.subIndex.index withObject:@(--indexCount2)];
+                        self.secondDataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts2 copy];
+                        self.secondLevelTableView.dataModel = self.secondDataModel;
+                        
                     }
                     break;
                 default:
@@ -681,7 +701,7 @@
             
             
             
-            //刷新角标显示
+            //刷新第一层相应位置角标显示，角标加一
             NSMutableArray *currentSelectConditionsCounts = [NSMutableArray arrayWithArray:self.firstDataModel.currentSelectConditionsCounts];
             NSInteger indexCount = [[currentSelectConditionsCounts objectAtIndex:self.indexModel.index] integerValue];
             [currentSelectConditionsCounts replaceObjectAtIndex:self.indexModel.index withObject:@(++indexCount)];
@@ -701,7 +721,22 @@
             
             self.indexModel.subIndex.subIndex = thirdModel;
             [self.currentConditions addObject:[self.indexModel copy]];
-
+            
+            //刷新第一层相应位置角标显示，角标加一
+            NSMutableArray *currentSelectConditionsCounts = [NSMutableArray arrayWithArray:self.firstDataModel.currentSelectConditionsCounts];
+            NSInteger indexCount = [[currentSelectConditionsCounts objectAtIndex:self.indexModel.index] integerValue];
+            [currentSelectConditionsCounts replaceObjectAtIndex:self.indexModel.index withObject:@(++indexCount)];
+            self.firstDataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts copy];
+            self.firstLevelTableView.dataModel = self.firstDataModel;
+            
+            //刷新第二层相应位置角标显示，角标加一
+            NSMutableArray *currentSelectConditionsCounts2 = [NSMutableArray arrayWithArray:self.secondDataModel.currentSelectConditionsCounts];
+            NSInteger indexCount2 = [[currentSelectConditionsCounts2 objectAtIndex:self.indexModel.subIndex.index] integerValue];
+            [currentSelectConditionsCounts2 replaceObjectAtIndex:self.indexModel.subIndex.index withObject:@(++indexCount2)];
+            self.secondDataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts2 copy];
+            self.secondLevelTableView.dataModel = self.secondDataModel;
+            
+            
             break;
         }
         default:
@@ -811,6 +846,10 @@
     return [currentSelectConditionsCounts copy];
 }
 
+/* 增加或者减少第一层或者第二层tableView右上角的角标个数 */
+- (void)changeIndexCountForTableView:(UITableView *)tableView policy: {
+    
+}
 
 
 /* 获得indexModel最里层的indexModel */
