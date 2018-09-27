@@ -11,6 +11,9 @@
 
 @interface FirstAndSecondConditionModel : NSObject
 
+/** 是否支持角标显示 */
+@property (nonatomic, assign) BOOL indexCountShowEnable;
+
 /** 当前列表中每个cell里选中的条件个数 */
 @property (nonatomic, strong) NSArray *currentSelectConditionsCounts;
 

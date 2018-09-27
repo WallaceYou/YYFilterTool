@@ -24,6 +24,9 @@
 /** 是否支持多选，默认不支持 */
 @property (nonatomic, assign) BOOL multiSelectionEnable;
 
+/** 是否支持角标显示，默认不支持 */
+@property (nonatomic, assign) BOOL indexCountShowEnable;
+
 /** 第一层元素数组，注意：格式为  @[@"a",@"b",@"c"] */
 @property (nonatomic, strong) NSArray *firstLevelElements;
 

@@ -118,8 +118,9 @@
     self.filterTool.secondLevelElements = secondLevelElements;
     self.filterTool.thirdLevelElement = thirdLevelElements;
     self.filterTool.levelType = YYBaseFilterTypeThreeLevel;
-    self.filterTool.multiSelectionEnable = YES;
+    self.filterTool.multiSelectionEnable = NO;
     self.filterTool.topConditionEnable = YES;
+    self.filterTool.indexCountShowEnable = YES;//支持角标
     
 //    __weak typeof(self) weakSelf = self;
     self.filterTool.filterComplete = ^(NSArray *filters) {

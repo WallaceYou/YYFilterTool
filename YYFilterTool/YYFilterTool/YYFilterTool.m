@@ -30,6 +30,10 @@
     self.baseFilter.multiSelectionEnable = multiSelectionEnable;
 }
 
+- (void)setIndexCountShowEnable:(BOOL)indexCountShowEnable {
+    self.baseFilter.indexCountShowEnable = indexCountShowEnable;
+}
+
 - (void)setFirstLevelElements:(NSArray *)firstLevelElements {
     self.baseFilter.firstLevelElements = firstLevelElements;
 }

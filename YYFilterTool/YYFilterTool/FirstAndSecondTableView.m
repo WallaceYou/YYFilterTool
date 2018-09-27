@@ -124,8 +124,12 @@
     NSInteger currentSelectConditionsCount = [[self.dataModel.currentSelectConditionsCounts objectAtIndex:indexPath.row] integerValue];
     
     cell.conditionNameLb.text = [self.dataModel.dataSource objectAtIndex:indexPath.row];
-    cell.indexBgView.hidden = !(currentSelectConditionsCount > 0);
-    cell.indexLb.text = [NSString stringWithFormat:@"%ld",currentSelectConditionsCount];
+    if (self.dataModel.indexCountShowEnable) {//如果支持角标显示
+        cell.indexBgView.hidden = (currentSelectConditionsCount <= 0);
+        cell.indexLb.text = [NSString stringWithFormat:@"%ld",currentSelectConditionsCount];
+    } else {//不支持，直接设为隐藏
+        cell.indexBgView.hidden = YES;
+    }
     cell.backgroundColor = indexPath.row == self.dataModel.currentSelectCellIndex?[UIColor whiteColor]:BgGreyColor;
     return cell;
 }
