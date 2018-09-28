@@ -23,6 +23,11 @@ typedef NS_ENUM(NSUInteger, AnimationType) {
     AnimationTypeAfter,//动画结束以后
 };
 
+typedef NS_ENUM(NSUInteger, TableViewType) {
+    TableViewTypeFirst,
+    TableViewTypeSecond,
+};
+
 
 @interface YYBaseFilter ()
 
@@ -45,6 +50,9 @@ typedef NS_ENUM(NSUInteger, AnimationType) {
 
 /* 一级tableView */
 @property (nonatomic, strong) FirstAndSecondTableView *firstLevelTableView;
+
+/* 一级table和二级table中间的白线 */
+@property (nonatomic, strong) UIView *columnView;
 
 /* 二级tableView */
 @property (nonatomic, strong) FirstAndSecondTableView *secondLevelTableView;
@@ -157,6 +165,11 @@ typedef NS_ENUM(NSUInteger, AnimationType) {
     //三级
     _thirdTableView = [ThirdTableView new];
     [_filterView addSubview:_thirdTableView];
+    
+    //一级table和二级table中间的分割线
+    _columnView = [UIView new];
+    _columnView.backgroundColor = [UIColor whiteColor];
+    [_filterView addSubview:_columnView];
 }
 
 
@@ -242,7 +255,7 @@ typedef NS_ENUM(NSUInteger, AnimationType) {
         
         //更改第三层tableView数据源，并刷新第三层表格（一层筛选时，没有前两层tableView）
         self.thirdDataModel.dataSource = self.firstLevelElements;
-        //默认初始化所有条件都为未点击状态
+        //根据当前选择的条件（self.currentConditions）显示第三层tableView的dataModel中的选择情况
         self.thirdDataModel.currentSelectedConditions = [self getThirdDataCurrentSelectedConditions];
         //刷新表格
         self.thirdTableView.dataModel = self.thirdDataModel;
@@ -252,19 +265,15 @@ typedef NS_ENUM(NSUInteger, AnimationType) {
         //更改第一层tableView数据源，并刷新第一层表格
         self.firstDataModel.dataSource = self.firstLevelElements;
         
-        //默认没有条件被选中
-        NSMutableArray *currentSelectConditionsCounts = [NSMutableArray new];
-        for (int i = 0; i < self.firstDataModel.dataSource.count; i++) {
-            [currentSelectConditionsCounts addObject:@(0)];
-        }
-        self.firstDataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts copy];
+        //根据当前选择的条件（self.currentConditions）显示第一层tableView的角标显示情况
+        self.firstDataModel.currentSelectConditionsCounts = [self getIndexCountWithTableViewType:TableViewTypeFirst];
         self.firstLevelTableView.dataModel = self.firstDataModel;
         
         
         //更改第三层tableView数据源，默认显示第一行数据
         self.thirdDataModel.dataSource = [self.secondLevelElements objectAtIndex:0];
         
-        //默认初始化所有条件都为未点击状态
+        //根据当前选择的条件（self.currentConditions）显示第三层tableView的dataModel中的选择情况
         self.thirdDataModel.currentSelectedConditions = [self getThirdDataCurrentSelectedConditions];
         
         //刷新第三层表格
@@ -282,18 +291,14 @@ typedef NS_ENUM(NSUInteger, AnimationType) {
         self.firstDataModel.dataSource = self.firstLevelElements;
         
         //默认没有条件被选中
-        NSMutableArray *currentSelectConditionsCounts = [NSMutableArray new];
-        for (int i = 0; i < self.firstDataModel.dataSource.count; i++) {
-            [currentSelectConditionsCounts addObject:@(0)];
-        }
-        self.firstDataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts copy];
+        self.firstDataModel.currentSelectConditionsCounts = [self getIndexCountWithTableViewType:TableViewTypeFirst];
         self.firstLevelTableView.dataModel = self.firstDataModel;
         
         //默认显示第一行数据
         self.secondDataModel.dataSource = [self.secondLevelElements objectAtIndex:0];
         
-        //默认没有条件被选中
-        self.secondDataModel.currentSelectConditionsCounts = [self getIndexCountForSecondModel];
+        //根据当前选择的条件（self.currentConditions）显示第二层tableView的角标显示情况
+        self.secondDataModel.currentSelectConditionsCounts = [self getIndexCountWithTableViewType:TableViewTypeSecond];
         self.secondLevelTableView.dataModel = self.secondDataModel;
         
         //默认显示第一行数据
@@ -475,7 +480,7 @@ typedef NS_ENUM(NSUInteger, AnimationType) {
                 
                 //更改第二层数据源
                 self.secondDataModel.dataSource = [self.secondLevelElements objectAtIndex:indexPath.row];
-                self.secondDataModel.currentSelectConditionsCounts = [self getIndexCountForSecondModel];
+                self.secondDataModel.currentSelectConditionsCounts = [self getIndexCountWithTableViewType:TableViewTypeSecond];
                 self.secondDataModel.currentSelectCellIndex = 0;
                 //刷新第二层表格
                 self.secondLevelTableView.dataModel = self.secondDataModel;
@@ -647,10 +652,11 @@ typedef NS_ENUM(NSUInteger, AnimationType) {
 /* 设置filterView以及它的子视图的位置，动画开始前还是动画结束后 */
 - (void)setFilterAndItsSubviewsToStartLocation:(AnimationType)animationType {
     
-    //计算tableView的宽度
+    //计算tableView的宽度，columnView的宽度
     CGFloat firstTableWidth = 0;
     CGFloat secondTableWidth = 0;
     CGFloat thirdTableWidth = 0;
+    CGFloat columnViewWidth = 0;
     
     switch (self.levelType) {
             
@@ -667,6 +673,7 @@ typedef NS_ENUM(NSUInteger, AnimationType) {
             firstTableWidth = kWindowW*FirstAndSecondLevelScale;
             secondTableWidth = kWindowW*FirstAndSecondLevelScale;
             thirdTableWidth = kWindowW*(1-FirstAndSecondLevelScale*2);
+            columnViewWidth = 1.5;
             break;
         default:
             break;
@@ -679,7 +686,8 @@ typedef NS_ENUM(NSUInteger, AnimationType) {
         self.filterView.frame = CGRectMake(0, self.startY, kWindowW, 0);
         self.topConditionCollectionView.frame = CGRectMake(0, 0, kWindowW, 0);
         self.lineView.frame = CGRectMake(0, 0, kWindowW, 0);
-        self.firstLevelTableView.frame = CGRectMake(0, 0, firstTableWidth, 0);;
+        self.firstLevelTableView.frame = CGRectMake(0, 0, firstTableWidth, 0);
+        self.columnView.frame = CGRectMake(firstTableWidth, 0, columnViewWidth, 0);
         self.secondLevelTableView.frame = CGRectMake(firstTableWidth, 0, secondTableWidth, 0);
         self.thirdTableView.frame = CGRectMake(firstTableWidth+secondTableWidth, 0, thirdTableWidth, 0);
         self.confirmBtn.frame = CGRectMake(0, 0, kWindowW, 0);
@@ -731,6 +739,7 @@ typedef NS_ENUM(NSUInteger, AnimationType) {
         self.topConditionCollectionView.frame = CGRectMake(0, 0, kWindowW, topColletionHeight);
         self.lineView.frame = CGRectMake(0, TopAndBottomHeight-1, kWindowW, 1);
         self.firstLevelTableView.frame = CGRectMake(0, topColletionHeight, firstTableWidth+1, tableViewHeight);
+        self.columnView.frame = CGRectMake(firstTableWidth, topColletionHeight, columnViewWidth, tableViewHeight);
         self.secondLevelTableView.frame = CGRectMake(firstTableWidth, topColletionHeight, secondTableWidth, tableViewHeight);
         self.thirdTableView.frame = CGRectMake(firstTableWidth+secondTableWidth, topColletionHeight, thirdTableWidth, tableViewHeight);
         self.confirmBtn.frame = CGRectMake(0, topColletionHeight+tableViewHeight, kWindowW, confirmBtnHeight);
@@ -787,18 +796,31 @@ typedef NS_ENUM(NSUInteger, AnimationType) {
     return [currentSelectedConditions copy];
 }
 
-/* 获取三层筛选时，第二层tableView的条件选择情况（即角标个数） */
-- (NSArray *)getIndexCountForSecondModel {
+/* 获取第一层table的条件选择情况（即角标个数）或者第二层tableView（三层筛选时）的条件选择情况（即角标个数） */
+- (NSArray *)getIndexCountWithTableViewType:(TableViewType)tableViewType {
+    
+    FirstAndSecondConditionModel *model = nil;
+    if (tableViewType == TableViewTypeFirst) {
+        model = self.firstDataModel;
+    } else {
+        model = self.secondDataModel;
+    }
     
     NSMutableArray *currentSelectConditionsCounts = [NSMutableArray new];
-    for (int i = 0; i < self.secondDataModel.dataSource.count; i++) {
+    for (int i = 0; i < model.dataSource.count; i++) {
         
         NSInteger selectCount = 0;
         
         for (FilterSelectIndexModel *indexModel in self.currentConditions) {
             
-            if (self.indexModel.index == indexModel.index && indexModel.subIndex.index == i) {
-                selectCount ++;
+            if (tableViewType == TableViewTypeFirst) {
+                if (indexModel.index == i) {
+                    selectCount ++;
+                }
+            } else {
+                if (self.indexModel.index == indexModel.index && indexModel.subIndex.index == i) {
+                    selectCount ++;
+                }
             }
         }
         
@@ -838,6 +860,14 @@ typedef NS_ENUM(NSUInteger, AnimationType) {
     [currentSelectConditionsCounts replaceObjectAtIndex:lineNumber withObject:@(policyType == PolicyTypeAddition?(++indexCount):(--indexCount))];
     dataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts copy];
     tableView.dataModel = dataModel;
+}
+
+@synthesize currentConditions = _currentConditions;
+#pragma mark - Setter
+- (void)setCurrentConditions:(NSMutableArray<FilterSelectIndexModel *> *)currentConditions {
+    _currentConditions = currentConditions;
+    //更新条件collectionView
+    self.topConditionCollectionView.conditions = currentConditions;
 }
 
 #pragma mark - Lazy

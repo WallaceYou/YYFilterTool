@@ -40,7 +40,7 @@
                                     <color key="titleColor" red="0.0" green="0.97680455450000003" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
-                                    <action selector="nearbyBtnClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="UpB-Jy-OLA"/>
+                                    <action selector="heroBtnClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="PxB-pN-Hc2"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jjs-Sv-bcA">

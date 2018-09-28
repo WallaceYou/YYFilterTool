@@ -27,13 +27,13 @@
 /** 是否支持角标显示，默认不支持 */
 @property (nonatomic, assign) BOOL indexCountShowEnable;
 
-/** 第一层元素数组，注意：格式为  @[@"a",@"b",@"c"] */
+/** 第一层元素数组，注意：格式为  @[@"a",@"b",@"c"]，格式错误可能会引起闪退 */
 @property (nonatomic, strong) NSArray *firstLevelElements;
 
-/** 第二层元素数组，注意：格式为  @[@[@"aa",@"bb",@"cc"],@[@"aa",@"bb",@"cc"],@[@"aa",@"bb",@"cc"]] */
+/** 第二层元素数组，注意：格式为  @[@[@"aa",@"bb",@"cc"],@[@"aa",@"bb",@"cc"],@[@"aa",@"bb",@"cc"]]，格式错误可能会引起闪退 */
 @property (nonatomic, strong) NSArray *secondLevelElements;
 
-/** 第三层元素数组，注意：格式为  @[@[@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"]],@[@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"]],@[@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"]]] */
+/** 第三层元素数组，注意：格式为  @[@[@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"]],@[@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"]],@[@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"],@[@"aaa",@"bbb",@"ccc"]]]，格式错误可能会引起闪退 */
 @property (nonatomic, strong) NSArray *thirdLevelElements;
 
 /** 当前选择的所有条件 */

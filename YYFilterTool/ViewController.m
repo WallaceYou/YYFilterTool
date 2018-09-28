@@ -15,6 +15,12 @@
 
 @property (nonatomic, strong) YYFilterTool *filterTool;//永远返回一个单例对象
 
+@property (nonatomic, strong) NSArray *sortFilters;
+
+@property (nonatomic, strong) NSArray *areaFilters;
+
+@property (nonatomic, strong) NSArray *heroFilters;
+
 
 @end
 
@@ -30,8 +36,12 @@
     self.filterTool.firstLevelElements = @[@"智能排序",@"离我最近",@"好评优先",@"人气最高"];
     self.filterTool.multiSelectionEnable = YES;
     self.filterTool.topConditionEnable = YES;
+    self.filterTool.currentConditions = [self.sortFilters mutableCopy];
     
+    __weak typeof(self) weakSelf = self;
     self.filterTool.filterComplete = ^(NSArray *filters) {
+        
+        weakSelf.sortFilters = filters;
         for (FilterSelectIndexModel *model in filters) {
             FilterSelectIndexModel *innermostModel = [YYFilterTool getInnermostIndexModelWith:model];
             NSLog(@"%@",innermostModel.filterName);
@@ -45,19 +55,19 @@
 }
 
 
-- (IBAction)nearbyBtnClick:(id)sender {
+- (IBAction)heroBtnClick:(id)sender {
     
-    NSMutableArray *firstLevelElements = [NSMutableArray new];
-    NSMutableArray *secondLevelElements = [NSMutableArray new];
-    
-    for (int i = 0; i < 30; i++) {
-        [firstLevelElements addObject:[NSString stringWithFormat:@"市%i",i]];
-        NSMutableArray *elements = [NSMutableArray new];
-        for (int j = 0; j < random()%30+1; j++) {
-            [elements addObject:[NSString stringWithFormat:@"市%i县%i",i,j]];
-        }
-        [secondLevelElements addObject:elements];
-    }
+//    NSMutableArray *firstLevelElements = [NSMutableArray new];
+//    NSMutableArray *secondLevelElements = [NSMutableArray new];
+//
+//    for (int i = 0; i < 30; i++) {
+//        [firstLevelElements addObject:[NSString stringWithFormat:@"市%i",i]];
+//        NSMutableArray *elements = [NSMutableArray new];
+//        for (int j = 0; j < random()%30+1; j++) {
+//            [elements addObject:[NSString stringWithFormat:@"市%i县%i",i,j]];
+//        }
+//        [secondLevelElements addObject:elements];
+//    }
     
     self.filterTool.firstLevelElements = @[@"艾欧尼亚",@"德玛西亚",@"诺克萨斯",@"巨神峰",@"祖安",@"皮尔特沃夫",@"弗雷尔卓德",@"比尔吉沃特",@"暗影岛",@"恕瑞玛",@"班德尔城",@"虚空之地",@"符文大陆"];
     
@@ -79,8 +89,13 @@
     self.filterTool.levelType = YYBaseFilterTypeDoubleLevel;
     self.filterTool.multiSelectionEnable = YES;
     self.filterTool.topConditionEnable = YES;
+    self.filterTool.indexCountShowEnable = YES;
+    self.filterTool.currentConditions = [self.heroFilters mutableCopy];
     
+    __weak typeof(self) weakSelf = self;
     self.filterTool.filterComplete = ^(NSArray *filters) {
+        
+        weakSelf.heroFilters = filters;
         for (FilterSelectIndexModel *model in filters) {
             FilterSelectIndexModel *innermostModel = [YYFilterTool getInnermostIndexModelWith:model];
             NSLog(@"%@",innermostModel.filterName);
@@ -102,10 +117,10 @@
         [firstLevelElements addObject:[NSString stringWithFormat:@"市%i",i]];
         NSMutableArray *elements = [NSMutableArray new];
         NSMutableArray *elementss = [NSMutableArray new];
-        for (int j = 0; j < random()%30+1; j++) {
+        for (int j = 0; j < 15; j++) {//random()%30+1
             [elements addObject:[NSString stringWithFormat:@"市%i县%i",i,j]];
             NSMutableArray *elementsss = [NSMutableArray new];
-            for (int k = 0; k < random()%30+1; k++) {
+            for (int k = 0; k < 15; k++) {
                 [elementsss addObject:[NSString stringWithFormat:@"市%i县%i镇%i",i,j,k]];
             }
             [elementss addObject:elementsss];
@@ -118,12 +133,16 @@
     self.filterTool.secondLevelElements = secondLevelElements;
     self.filterTool.thirdLevelElement = thirdLevelElements;
     self.filterTool.levelType = YYBaseFilterTypeThreeLevel;
-    self.filterTool.multiSelectionEnable = NO;
+    self.filterTool.multiSelectionEnable = YES;
     self.filterTool.topConditionEnable = YES;
     self.filterTool.indexCountShowEnable = YES;//支持角标
+    self.filterTool.currentConditions = [self.areaFilters mutableCopy];
     
-//    __weak typeof(self) weakSelf = self;
+    __weak typeof(self) weakSelf = self;
     self.filterTool.filterComplete = ^(NSArray *filters) {
+        
+        weakSelf.areaFilters = filters;
+        
         for (FilterSelectIndexModel *model in filters) {
             FilterSelectIndexModel *innermostModel = [YYFilterTool getInnermostIndexModelWith:model];
             NSLog(@"%@",innermostModel.filterName);
@@ -141,6 +160,7 @@
     }
     return _filterTool;
 }
+
 
 
 @end
