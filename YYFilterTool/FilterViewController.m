@@ -34,8 +34,14 @@
 - (IBAction)sortbyBtnClick:(id)sender {
     
     self.filterTool.firstLevelElements = @[@"智能排序",@"离我最近",@"好评优先",@"人气最高"];
-//    self.filterTool.multiSelectionEnable = YES;
-    self.filterTool.topConditionEnable = YES;
+    self.filterTool.multiSelectionEnable = self.multiSelectionEnable;
+    self.filterTool.topConditionEnable = self.topAndIndexCountEnable;
+    self.filterTool.indexCountShowEnable = self.topAndIndexCountEnable;
+    if (self.customImage) {
+        self.filterTool.selectedBtnHighlightedName = @"3";
+        self.filterTool.selectedBtnNormalName = @"";
+    }
+    
     self.filterTool.currentConditions = [self.sortFilters mutableCopy];
     
     __weak typeof(self) weakSelf = self;
@@ -87,9 +93,13 @@
                                             @[@"暗裔剑魔",@"傲之追猎者",@"潮汐海灵",@"翠神",@"堕落天使",@"恶魔小丑",@"复仇焰魂",@"河流之王",@"黑暗之女",@"唤潮鲛姬",@"荆棘之兴",@"酒桶",@"狂野女猎手",@"符文法师",@"迷失之牙",@"末日使者",@"牛头酋长",@"熔岩巨兽",@"审判天使",@"时光守护者",@"武器大师",@"星界游神",@"永恒梦魇",@"永猎双子",@"铸星龙王"]
                                             ];
     self.filterTool.levelType = YYBaseFilterTypeDoubleLevel;
-//    self.filterTool.multiSelectionEnable = YES;
-    self.filterTool.topConditionEnable = YES;
-    self.filterTool.indexCountShowEnable = YES;
+    self.filterTool.multiSelectionEnable = self.multiSelectionEnable;
+    self.filterTool.topConditionEnable = self.topAndIndexCountEnable;
+    self.filterTool.indexCountShowEnable = self.topAndIndexCountEnable;
+    if (self.customImage) {
+        self.filterTool.selectedBtnHighlightedName = @"1";
+        self.filterTool.selectedBtnNormalName = @"2";
+    }
     self.filterTool.currentConditions = [self.heroFilters mutableCopy];
     
     __weak typeof(self) weakSelf = self;
@@ -133,9 +143,14 @@
     self.filterTool.secondLevelElements = secondLevelElements;
     self.filterTool.thirdLevelElement = thirdLevelElements;
     self.filterTool.levelType = YYBaseFilterTypeThreeLevel;
-//    self.filterTool.multiSelectionEnable = YES;
-    self.filterTool.topConditionEnable = YES;
-    self.filterTool.indexCountShowEnable = YES;//支持角标
+    self.filterTool.multiSelectionEnable = self.multiSelectionEnable;
+    self.filterTool.topConditionEnable = self.topAndIndexCountEnable;
+    self.filterTool.indexCountShowEnable = self.topAndIndexCountEnable;
+    if (self.customImage) {
+        self.filterTool.selectedBtnHighlightedName = @"1";
+        self.filterTool.selectedBtnNormalName = @"2";
+    }
+    
     self.filterTool.currentConditions = [self.areaFilters mutableCopy];
     
     __weak typeof(self) weakSelf = self;

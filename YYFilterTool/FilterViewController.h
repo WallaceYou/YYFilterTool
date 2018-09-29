@@ -10,6 +10,11 @@
 
 @interface FilterViewController : UIViewController
 
+@property (nonatomic, assign) BOOL multiSelectionEnable;
+
+@property (nonatomic, assign) BOOL topAndIndexCountEnable;
+
+@property (nonatomic, assign) BOOL customImage;
 
 @end
 

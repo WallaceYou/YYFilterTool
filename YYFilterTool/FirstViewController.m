@@ -46,20 +46,44 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    YYFilterTool *tool = [YYFilterTool shareInstance];
-
     NSString *chooseName = [self.chooseArray objectAtIndex:indexPath.row];
-    if ([chooseName isEqualToString:@"多选"]) {
-        tool.multiSelectionEnable = YES;
-    }
     
-    [self performSegueWithIdentifier:@"chooseToDetail" sender:nil];
+    if (self.type == ChooseTypeFirst) {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        FirstViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"First"];
+        vc.type = [chooseName isEqualToString:@"多选"]?ChooseTypeSecond:ChooseTypeThird;
+        vc.multiSelectionEnable = [chooseName isEqualToString:@"多选"];
+        [self.navigationController pushViewController:vc animated:YES];
+        
+    } else if (self.type == ChooseTypeSecond) {
+        
+        if (self.multiSelectionEnable) {
+            
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            FirstViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"First"];
+            vc.type = ChooseTypeThird;
+            vc.topAndIndexCountEnable = [chooseName isEqualToString:@"顶部条件显示、角标显示"];
+            [self.navigationController pushViewController:vc animated:YES];
+        } else {
+            
+            
+            
+        }
+        
+    } else  {
+        
+        self.customImage = [chooseName isEqualToString:@"自定义图片"];
+        [self performSegueWithIdentifier:@"chooseToDetail" sender:nil];
+    }
     
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"chooseToDetail"]) {
-        NSLog(@"haha");
+        FilterViewController *vc = segue.destinationViewController;
+        vc.multiSelectionEnable = self.multiSelectionEnable;
+        vc.topAndIndexCountEnable = self.topAndIndexCountEnable;
+        vc.customImage = self.customImage;
     }
 }
 
@@ -67,7 +91,21 @@
 #pragma mark - Lazy
 - (NSArray *)chooseArray {
     if (!_chooseArray) {
-        _chooseArray = @[@"单选",@"多选"];
+        
+        switch (self.type) {
+            case ChooseTypeFirst:
+                _chooseArray = @[@"单选",@"多选"];
+                break;
+            case ChooseTypeSecond:
+                _chooseArray = @[@"顶部条件显示、角标显示",@"都不显示"];
+                break;
+            case ChooseTypeThird:
+                _chooseArray = @[@"自定义图片",@"默认图片"];
+                break;
+            default:
+                break;
+        }
+        
     }
     return _chooseArray;
 }

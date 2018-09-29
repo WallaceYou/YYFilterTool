@@ -8,6 +8,22 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSUInteger, ChooseType) {
+    ChooseTypeFirst,
+    ChooseTypeSecond,
+    ChooseTypeThird,
+};
+
 @interface FirstViewController : UIViewController
+
+@property (nonatomic, assign) BOOL multiSelectionEnable;
+
+@property (nonatomic, assign) BOOL topAndIndexCountEnable;
+
+@property (nonatomic, assign) BOOL customImage;
+
+
+@property (nonatomic, assign) ChooseType type;
+
 
 @end
