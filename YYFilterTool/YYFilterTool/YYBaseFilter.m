@@ -174,6 +174,13 @@ typedef NS_ENUM(NSUInteger, TableViewType) {
 
 
 #pragma mark - Setter
+@synthesize currentConditions = _currentConditions;
+- (void)setCurrentConditions:(NSMutableArray<FilterSelectIndexModel *> *)currentConditions {
+    _currentConditions = currentConditions;
+    //更新条件collectionView
+    self.topConditionCollectionView.conditions = currentConditions;
+}
+
 - (void)setFirstLevelElements:(NSArray *)firstLevelElements {
     _firstLevelElements = firstLevelElements;
 }
@@ -572,7 +579,11 @@ typedef NS_ENUM(NSUInteger, TableViewType) {
             }
         }
     }
-
+    
+    //如果是单选，则要先把所有条件remove掉
+    if (!self.multiSelectionEnable) {
+        [self.currentConditions removeAllObjects];
+    }
 
     //如果没找到，则将此条件添加到self.currentConditions中去
     switch (self.levelType) {
@@ -860,14 +871,6 @@ typedef NS_ENUM(NSUInteger, TableViewType) {
     [currentSelectConditionsCounts replaceObjectAtIndex:lineNumber withObject:@(policyType == PolicyTypeAddition?(++indexCount):(--indexCount))];
     dataModel.currentSelectConditionsCounts = [currentSelectConditionsCounts copy];
     tableView.dataModel = dataModel;
-}
-
-@synthesize currentConditions = _currentConditions;
-#pragma mark - Setter
-- (void)setCurrentConditions:(NSMutableArray<FilterSelectIndexModel *> *)currentConditions {
-    _currentConditions = currentConditions;
-    //更新条件collectionView
-    self.topConditionCollectionView.conditions = currentConditions;
 }
 
 #pragma mark - Lazy

@@ -1,16 +1,16 @@
 //
-//  ViewController.m
+//  FilterViewController.m
 //  YYBaseFilter
 //
 //  Created by yuyou on 2018/9/7.
 //  Copyright © 2018年 hengtiansoft. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "FilterViewController.h"
 #import "YYFilterTool.h"
 
 
-@interface ViewController ()
+@interface FilterViewController ()
 @property (weak, nonatomic) IBOutlet UIButton *button;
 
 @property (nonatomic, strong) YYFilterTool *filterTool;//永远返回一个单例对象
@@ -24,7 +24,7 @@
 
 @end
 
-@implementation ViewController
+@implementation FilterViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -34,7 +34,7 @@
 - (IBAction)sortbyBtnClick:(id)sender {
     
     self.filterTool.firstLevelElements = @[@"智能排序",@"离我最近",@"好评优先",@"人气最高"];
-    self.filterTool.multiSelectionEnable = YES;
+//    self.filterTool.multiSelectionEnable = YES;
     self.filterTool.topConditionEnable = YES;
     self.filterTool.currentConditions = [self.sortFilters mutableCopy];
     
@@ -87,7 +87,7 @@
                                             @[@"暗裔剑魔",@"傲之追猎者",@"潮汐海灵",@"翠神",@"堕落天使",@"恶魔小丑",@"复仇焰魂",@"河流之王",@"黑暗之女",@"唤潮鲛姬",@"荆棘之兴",@"酒桶",@"狂野女猎手",@"符文法师",@"迷失之牙",@"末日使者",@"牛头酋长",@"熔岩巨兽",@"审判天使",@"时光守护者",@"武器大师",@"星界游神",@"永恒梦魇",@"永猎双子",@"铸星龙王"]
                                             ];
     self.filterTool.levelType = YYBaseFilterTypeDoubleLevel;
-    self.filterTool.multiSelectionEnable = YES;
+//    self.filterTool.multiSelectionEnable = YES;
     self.filterTool.topConditionEnable = YES;
     self.filterTool.indexCountShowEnable = YES;
     self.filterTool.currentConditions = [self.heroFilters mutableCopy];
@@ -133,7 +133,7 @@
     self.filterTool.secondLevelElements = secondLevelElements;
     self.filterTool.thirdLevelElement = thirdLevelElements;
     self.filterTool.levelType = YYBaseFilterTypeThreeLevel;
-    self.filterTool.multiSelectionEnable = YES;
+//    self.filterTool.multiSelectionEnable = YES;
     self.filterTool.topConditionEnable = YES;
     self.filterTool.indexCountShowEnable = YES;//支持角标
     self.filterTool.currentConditions = [self.areaFilters mutableCopy];

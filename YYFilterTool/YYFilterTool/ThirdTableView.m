@@ -133,6 +133,9 @@
     //更改数据源，刷新tableView
     NSMutableArray *mArray = [NSMutableArray arrayWithArray:self.dataModel.currentSelectedConditions];
     
+    //要刷新的行
+    NSMutableArray *refreshIndexPaths = [NSMutableArray new];
+    
     if (mArray.count == 0) {
         return;
     }
@@ -146,16 +149,41 @@
         } else {//如果是未选中的，则置为已选中
             [mArray replaceObjectAtIndex:indexPath.row withObject:@(YES)];
         }
+        
+        [refreshIndexPaths addObject:indexPath];
+        
     } else {//不支持多选
+        
+        NSInteger lastIndex = -1;
+        NSIndexPath *lastIndexPath = nil;
+        
+        //先看看有没有被点击的元素
+        for (int i = 0; i<mArray.count; i++) {
+            BOOL b = [mArray[i] boolValue];
+            if (b) {
+                lastIndex = i;
+            }
+        }
+        
+        if (lastIndex != -1) {//之前就有被点击的元素
+            [mArray replaceObjectAtIndex:lastIndex withObject:@(NO)];//变回来
+            lastIndexPath = [NSIndexPath indexPathForRow:lastIndex inSection:0];
+        }
+        
         //不管选没选中，都置为选中
         [mArray replaceObjectAtIndex:indexPath.row withObject:@(YES)];
+        
+        //刷新表格
+        if (lastIndexPath) {
+            [refreshIndexPaths addObject:lastIndexPath];
+        }
+        [refreshIndexPaths addObject:indexPath];
     }
     
     //然后更改数据源
     self.dataModel.currentSelectedConditions = [mArray copy];
-    
     //刷新表格
-    [self reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self reloadRowsAtIndexPaths:refreshIndexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
     
     //告诉外界
     [[NSNotificationCenter defaultCenter] postNotificationName:ThirdTableViewClick object:nil userInfo:@{@"indexPath":indexPath}];

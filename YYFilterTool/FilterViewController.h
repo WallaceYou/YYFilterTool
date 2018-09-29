@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  FilterViewController.h
 //  YYFilterTool
 //
 //  Created by yuyou on 2018/9/7.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
+@interface FilterViewController : UIViewController
 
 
 @end
