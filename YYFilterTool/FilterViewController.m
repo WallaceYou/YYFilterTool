@@ -8,6 +8,7 @@
 
 #import "FilterViewController.h"
 #import "YYFilterTool.h"
+#import "MBProgressHUD+YYUtils.h"
 
 
 @interface FilterViewController ()
@@ -30,6 +31,21 @@
     [super viewDidLoad];
 }
 
+//在当前页面加入下面方法
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    //去掉导航栏底部的黑线
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+}
+//如果仅设置当前页导航透明，需加入下面方法
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setShadowImage:nil];
+}
+
+
 
 - (IBAction)sortbyBtnClick:(id)sender {
     
@@ -50,13 +66,21 @@
     self.filterTool.currentConditions = [self.sortFilters mutableCopy];
     
     __weak typeof(self) weakSelf = self;
+    NSMutableString *filterString = [NSMutableString new];
     self.filterTool.filterComplete = ^(NSArray *filters) {
         
         weakSelf.sortFilters = filters;
         for (FilterSelectIndexModel *model in filters) {
             FilterSelectIndexModel *innermostModel = [YYFilterTool getInnermostIndexModelWith:model];
-            NSLog(@"%@",innermostModel.filterName);
+            NSInteger index = [filters indexOfObject:model];
+            if (index == filters.count-1) {
+                [filterString appendFormat:@"%@",innermostModel.filterName];
+            } else {
+                [filterString appendFormat:@"%@,",innermostModel.filterName];
+            }
         }
+        NSLog(@"%@",filterString);
+        [MBProgressHUD showMessage:filterString];
     };
     
     [self.filterTool popFilterViewWithStartY:150 startAnimateComplete:nil closeAnimateComplete:^{
@@ -113,13 +137,21 @@
     self.filterTool.currentConditions = [self.heroFilters mutableCopy];
     
     __weak typeof(self) weakSelf = self;
+    NSMutableString *filterString = [NSMutableString new];
     self.filterTool.filterComplete = ^(NSArray *filters) {
         
         weakSelf.heroFilters = filters;
         for (FilterSelectIndexModel *model in filters) {
             FilterSelectIndexModel *innermostModel = [YYFilterTool getInnermostIndexModelWith:model];
-            NSLog(@"%@",innermostModel.filterName);
+            NSInteger index = [filters indexOfObject:model];
+            if (index == filters.count-1) {
+                [filterString appendFormat:@"%@",innermostModel.filterName];
+            } else {
+                [filterString appendFormat:@"%@,",innermostModel.filterName];
+            }
         }
+        NSLog(@"%@",filterString);
+        [MBProgressHUD showMessage:filterString];
     };
     
     [self.filterTool popFilterViewWithStartY:150 startAnimateComplete:nil closeAnimateComplete:^{
@@ -169,14 +201,22 @@
     self.filterTool.currentConditions = [self.areaFilters mutableCopy];
     
     __weak typeof(self) weakSelf = self;
+    NSMutableString *filterString = [NSMutableString new];
     self.filterTool.filterComplete = ^(NSArray *filters) {
         
         weakSelf.areaFilters = filters;
         
         for (FilterSelectIndexModel *model in filters) {
             FilterSelectIndexModel *innermostModel = [YYFilterTool getInnermostIndexModelWith:model];
-            NSLog(@"%@",innermostModel.filterName);
+            NSInteger index = [filters indexOfObject:model];
+            if (index == filters.count-1) {
+                [filterString appendFormat:@"%@",innermostModel.filterName];
+            } else {
+                [filterString appendFormat:@"%@,",innermostModel.filterName];
+            }
         }
+        NSLog(@"%@",filterString);
+        [MBProgressHUD showMessage:filterString];
     };
     
     [self.filterTool popFilterViewWithStartY:150 startAnimateComplete:nil closeAnimateComplete:^{

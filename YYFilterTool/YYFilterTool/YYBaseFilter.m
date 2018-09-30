@@ -222,6 +222,19 @@ typedef NS_ENUM(NSUInteger, TableViewType) {
 - (void)setMultiSelectionEnable:(BOOL)multiSelectionEnable {
     _multiSelectionEnable = multiSelectionEnable;
     self.thirdDataModel.multiSelectionEnable = multiSelectionEnable;
+    
+    if (multiSelectionEnable) {//多选
+        if (self.selectedBtnHighlightedName == nil) {
+            self.selectedBtnHighlightedName = @"select_square_bright";//设置默认图片
+            self.selectedBtnNormalName = @"select_square_grey";//设置默认图片
+        }
+    } else {//单选
+        if (self.selectedBtnNormalName == nil) {
+            self.selectedBtnHighlightedName = @"select_square_right";//设置默认图片
+            self.selectedBtnNormalName = @"";//设置默认图片
+        }
+    }
+    
     //设置完之后看看_topConditionEnable是否为YES，如果为YES说明之前设置了topConditionEnable，只不过当时还没设置multiSelectionEnable，此时可以设置topConditionEnable了
     _topConditionEnable = _allowTopCondition;
     

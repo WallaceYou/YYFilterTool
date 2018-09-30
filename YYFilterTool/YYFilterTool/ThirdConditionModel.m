@@ -13,7 +13,12 @@
 - (NSString *)selectedBtnHighlightedName {
     
     if (_selectedBtnHighlightedName == nil) {
-        _selectedBtnHighlightedName = @"select_square_bright";
+        if (self.multiSelectionEnable) {//多选
+            _selectedBtnHighlightedName = @"select_square_bright";
+        } else {
+            _selectedBtnHighlightedName = @"select_square_right";
+        }
+        
     }
     
     return _selectedBtnHighlightedName;
@@ -23,7 +28,12 @@
 - (NSString *)selectedBtnNormalName {
     
     if (_selectedBtnNormalName == nil) {
-        _selectedBtnNormalName = @"select_square_grey";
+        if (self.multiSelectionEnable) {//多选
+            _selectedBtnNormalName = @"select_square_grey";
+        } else {
+            _selectedBtnNormalName = @"";
+        }
+        
     }
     
     return _selectedBtnNormalName;
