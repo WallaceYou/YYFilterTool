@@ -37,9 +37,14 @@
     self.filterTool.multiSelectionEnable = self.multiSelectionEnable;
     self.filterTool.topConditionEnable = self.topAndIndexCountEnable;
     self.filterTool.indexCountShowEnable = self.topAndIndexCountEnable;
-    if (self.customImage) {
-        self.filterTool.selectedBtnHighlightedName = @"3";
-        self.filterTool.selectedBtnNormalName = @"";
+    if (self.customImageEnable) {
+        if (self.multiSelectionEnable) {
+            self.filterTool.selectedBtnHighlightedName = @"1";
+            self.filterTool.selectedBtnNormalName = @"2";
+        }  else {
+            self.filterTool.selectedBtnHighlightedName = @"3";
+            self.filterTool.selectedBtnNormalName = @"0";
+        }
     }
     
     self.filterTool.currentConditions = [self.sortFilters mutableCopy];
@@ -96,9 +101,14 @@
     self.filterTool.multiSelectionEnable = self.multiSelectionEnable;
     self.filterTool.topConditionEnable = self.topAndIndexCountEnable;
     self.filterTool.indexCountShowEnable = self.topAndIndexCountEnable;
-    if (self.customImage) {
-        self.filterTool.selectedBtnHighlightedName = @"1";
-        self.filterTool.selectedBtnNormalName = @"2";
+    if (self.customImageEnable) {
+        if (self.multiSelectionEnable) {
+            self.filterTool.selectedBtnHighlightedName = @"1";
+            self.filterTool.selectedBtnNormalName = @"2";
+        }  else {
+            self.filterTool.selectedBtnHighlightedName = @"3";
+            self.filterTool.selectedBtnNormalName = @"0";
+        }
     }
     self.filterTool.currentConditions = [self.heroFilters mutableCopy];
     
@@ -146,9 +156,14 @@
     self.filterTool.multiSelectionEnable = self.multiSelectionEnable;
     self.filterTool.topConditionEnable = self.topAndIndexCountEnable;
     self.filterTool.indexCountShowEnable = self.topAndIndexCountEnable;
-    if (self.customImage) {
-        self.filterTool.selectedBtnHighlightedName = @"1";
-        self.filterTool.selectedBtnNormalName = @"2";
+    if (self.customImageEnable) {
+        if (self.multiSelectionEnable) {
+            self.filterTool.selectedBtnHighlightedName = @"1";
+            self.filterTool.selectedBtnNormalName = @"2";
+        }  else {
+            self.filterTool.selectedBtnHighlightedName = @"3";
+            self.filterTool.selectedBtnNormalName = @"0";
+        }
     }
     
     self.filterTool.currentConditions = [self.areaFilters mutableCopy];

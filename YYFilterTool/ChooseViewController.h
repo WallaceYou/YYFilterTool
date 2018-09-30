@@ -1,5 +1,5 @@
 //
-//  FirstViewController.h
+//  ChooseViewController.h
 //  YYFilterTool
 //
 //  Created by yuyou on 2018/9/29.
@@ -14,13 +14,13 @@ typedef NS_ENUM(NSUInteger, ChooseType) {
     ChooseTypeThird,
 };
 
-@interface FirstViewController : UIViewController
+@interface ChooseViewController : UIViewController
 
 @property (nonatomic, assign) BOOL multiSelectionEnable;
 
 @property (nonatomic, assign) BOOL topAndIndexCountEnable;
 
-@property (nonatomic, assign) BOOL customImage;
+@property (nonatomic, assign) BOOL customImageEnable;
 
 
 @property (nonatomic, assign) ChooseType type;

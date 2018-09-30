@@ -193,6 +193,20 @@ typedef NS_ENUM(NSUInteger, TableViewType) {
     _thirdLevelElements = thirdLevelElements;
 }
 
+- (void)setSelectedBtnHighlightedName:(NSString *)selectedBtnHighlightedName {
+    if (_selectedBtnHighlightedName != selectedBtnHighlightedName) {
+        _selectedBtnHighlightedName = [selectedBtnHighlightedName copy];
+        self.thirdDataModel.selectedBtnHighlightedName = selectedBtnHighlightedName;
+    }
+}
+
+- (void)setSelectedBtnNormalName:(NSString *)selectedBtnNormalName {
+    if (_selectedBtnNormalName != selectedBtnNormalName) {
+        _selectedBtnNormalName = [selectedBtnNormalName copy];
+        self.thirdDataModel.selectedBtnNormalName = selectedBtnNormalName;
+    }
+}
+
 
 - (void)setTopConditionEnable:(BOOL)topConditionEnable {
     

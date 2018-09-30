@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BC02AB23215F725E00893913 /* FirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BC02AB22215F725E00893913 /* FirstViewController.m */; };
+		BC02AB23215F725E00893913 /* ChooseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BC02AB22215F725E00893913 /* ChooseViewController.m */; };
 		BC02AB27215F7FBF00893913 /* select_square_right@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = BC02AB24215F7FBE00893913 /* select_square_right@3x.png */; };
 		BC02AB28215F7FBF00893913 /* select_square_right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BC02AB25215F7FBE00893913 /* select_square_right@2x.png */; };
 		BC02AB29215F7FBF00893913 /* select_square_right.png in Resources */ = {isa = PBXBuildFile; fileRef = BC02AB26215F7FBE00893913 /* select_square_right.png */; };
@@ -49,8 +49,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		BC02AB21215F725E00893913 /* FirstViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirstViewController.h; sourceTree = "<group>"; };
-		BC02AB22215F725E00893913 /* FirstViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FirstViewController.m; sourceTree = "<group>"; };
+		BC02AB21215F725E00893913 /* ChooseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChooseViewController.h; sourceTree = "<group>"; };
+		BC02AB22215F725E00893913 /* ChooseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChooseViewController.m; sourceTree = "<group>"; };
 		BC02AB24215F7FBE00893913 /* select_square_right@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "select_square_right@3x.png"; sourceTree = "<group>"; };
 		BC02AB25215F7FBE00893913 /* select_square_right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "select_square_right@2x.png"; sourceTree = "<group>"; };
 		BC02AB26215F7FBE00893913 /* select_square_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = select_square_right.png; sourceTree = "<group>"; };
@@ -155,8 +155,8 @@
 				BCC380C3214253020069E76E /* YYFilterTool */,
 				BCC380AD214252650069E76E /* AppDelegate.h */,
 				BCC380AE214252650069E76E /* AppDelegate.m */,
-				BC02AB21215F725E00893913 /* FirstViewController.h */,
-				BC02AB22215F725E00893913 /* FirstViewController.m */,
+				BC02AB21215F725E00893913 /* ChooseViewController.h */,
+				BC02AB22215F725E00893913 /* ChooseViewController.m */,
 				BCC380B0214252650069E76E /* FilterViewController.h */,
 				BCC380B1214252650069E76E /* FilterViewController.m */,
 				BCC380B3214252650069E76E /* Main.storyboard */,
@@ -337,7 +337,7 @@
 				BCC380B2214252650069E76E /* FilterViewController.m in Sources */,
 				BCC380F7214253970069E76E /* View+MASAdditions.m in Sources */,
 				BCC380F1214253970069E76E /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
-				BC02AB23215F725E00893913 /* FirstViewController.m in Sources */,
+				BC02AB23215F725E00893913 /* ChooseViewController.m in Sources */,
 				BCEC05DE214B89C800E68E00 /* ThirdTableView.m in Sources */,
 				BCC380F3214253970069E76E /* MASCompositeConstraint.m in Sources */,
 				BCC3811321426D630069E76E /* YYBaseFilter.m in Sources */,

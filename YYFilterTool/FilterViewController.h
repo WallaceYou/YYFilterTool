@@ -14,7 +14,7 @@
 
 @property (nonatomic, assign) BOOL topAndIndexCountEnable;
 
-@property (nonatomic, assign) BOOL customImage;
+@property (nonatomic, assign) BOOL customImageEnable;
 
 @end
 

@@ -1,16 +1,16 @@
 //
-//  FirstViewController.m
+//  ChooseViewController.m
 //  YYFilterTool
 //
 //  Created by yuyou on 2018/9/29.
 //  Copyright © 2018年 hengtiansoft. All rights reserved.
 //
 
-#import "FirstViewController.h"
+#import "ChooseViewController.h"
 #import "YYFilterTool.h"
 #import "FilterViewController.h"
 
-@interface FirstViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface ChooseViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
@@ -18,7 +18,7 @@
 
 @end
 
-@implementation FirstViewController
+@implementation ChooseViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -50,29 +50,23 @@
     
     if (self.type == ChooseTypeFirst) {
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        FirstViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"First"];
+        ChooseViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"First"];
         vc.type = [chooseName isEqualToString:@"多选"]?ChooseTypeSecond:ChooseTypeThird;
         vc.multiSelectionEnable = [chooseName isEqualToString:@"多选"];
         [self.navigationController pushViewController:vc animated:YES];
         
     } else if (self.type == ChooseTypeSecond) {
         
-        if (self.multiSelectionEnable) {
-            
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-            FirstViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"First"];
-            vc.type = ChooseTypeThird;
-            vc.topAndIndexCountEnable = [chooseName isEqualToString:@"顶部条件显示、角标显示"];
-            [self.navigationController pushViewController:vc animated:YES];
-        } else {
-            
-            
-            
-        }
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        ChooseViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"First"];
+        vc.type = ChooseTypeThird;
+        vc.topAndIndexCountEnable = [chooseName isEqualToString:@"顶部条件显示、角标显示"];
+        vc.multiSelectionEnable = self.multiSelectionEnable;
+        [self.navigationController pushViewController:vc animated:YES];
         
     } else  {
         
-        self.customImage = [chooseName isEqualToString:@"自定义图片"];
+        self.customImageEnable = [chooseName isEqualToString:@"自定义图片"];
         [self performSegueWithIdentifier:@"chooseToDetail" sender:nil];
     }
     
@@ -83,7 +77,7 @@
         FilterViewController *vc = segue.destinationViewController;
         vc.multiSelectionEnable = self.multiSelectionEnable;
         vc.topAndIndexCountEnable = self.topAndIndexCountEnable;
-        vc.customImage = self.customImage;
+        vc.customImageEnable = self.customImageEnable;
     }
 }
 

@@ -9,10 +9,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--First View Controller-->
+        <!--Choose View Controller-->
         <scene sceneID="mdi-WO-dIV">
             <objects>
-                <viewController storyboardIdentifier="First" id="IYC-iB-uES" customClass="FirstViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="First" id="IYC-iB-uES" customClass="ChooseViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="h4c-Ag-91C">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
