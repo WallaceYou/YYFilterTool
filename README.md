@@ -26,16 +26,29 @@
 //    filterTool.multiSelectionEnable = NO;//默认不支持多选，所以可以不写
     [filterTool popFilterViewWithStartY:150 startAnimateComplete:nil closeAnimateComplete:nil];
 ```
+* 效果
+
+![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/1.gif)
+
+---
 * 多选 + 一层筛选
 ```objc
     filterTool.multiSelectionEnable = YES;//多选
 ```
+* 效果
+
+![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/2.gif)
+
+---
 
 * 多选 + 一层筛选 + 顶部条件框
 ```objc
     //加一句
     filterTool.topConditionEnable = YES;//顶部条件框的显示
 ```
+* 效果
+
+![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/3.gif)
 
 * 多选 + 三层筛选 + 顶部条件框
 ```objc
@@ -68,8 +81,14 @@
     filterTool.topConditionEnable = YES;//顶部条件框的显示
     [filterTool popFilterViewWithStartY:150 startAnimateComplete:nil closeAnimateComplete:nil];
 ```
+* 效果
+
+![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/4.gif)
 
 * 多选 + 三层筛选 + 顶部条件框 + 角标
 ```objc
     filterTool.indexCountShowEnable = YES;//角标显示
 ```
+* 效果
+
+![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/5.gif)
