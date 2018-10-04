@@ -99,4 +99,3 @@
 
 ![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/6.gif)
 ![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/7.gif)
-![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/6.gif)
