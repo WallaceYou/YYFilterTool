@@ -106,3 +106,4 @@
 ---
 # Last
 * 如果你感觉不错，不要吝啬，给颗星鼓励一下吧\~😊thank you very much for give me a star~
+* 如果你在使用过程中有发现不合理的地方或者bug，请疯狂issues我！谢谢！
