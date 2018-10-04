@@ -17,7 +17,7 @@
 
 ---
 ## How to use
-* 单选 + 一层筛选
+### 单选 + 一层筛选
 
 ```objc
     YYFilterTool *filterTool = [YYFilterTool shareInstance];
@@ -30,8 +30,7 @@
 
 ![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/1.gif)
 
----
-* 多选 + 一层筛选
+### 多选 + 一层筛选
 ```objc
     filterTool.multiSelectionEnable = YES;//多选
 ```
@@ -39,9 +38,7 @@
 
 ![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/2.gif)
 
----
-
-* 多选 + 一层筛选 + 顶部条件框
+### 多选 + 一层筛选 + 顶部条件框
 ```objc
     //加一句
     filterTool.topConditionEnable = YES;//顶部条件框的显示
@@ -50,7 +47,7 @@
 
 ![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/3.gif)
 
-* 多选 + 三层筛选 + 顶部条件框
+### 多选 + 三层筛选 + 顶部条件框
 ```objc
     YYFilterTool *filterTool = [YYFilterTool shareInstance];
     
@@ -85,7 +82,7 @@
 
 ![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/4.gif)
 
-* 多选 + 三层筛选 + 顶部条件框 + 角标
+### 多选 + 三层筛选 + 顶部条件框 + 角标
 ```objc
     filterTool.indexCountShowEnable = YES;//角标显示
 ```
