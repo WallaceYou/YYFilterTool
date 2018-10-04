@@ -99,3 +99,10 @@
 
 ![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/6.gif)
 ![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/7.gif)
+
+### 7、其他自定义
+如果想自定义其他东西，比如背景颜色，角标样式，完成按钮样式等，可以去源码中修改，源码中有很多注释，看起来比较容易。
+
+---
+# Last
+* 如果你感觉不错，不要吝啬，给颗星鼓励一下吧\~😊thank you very much for give me a star~
