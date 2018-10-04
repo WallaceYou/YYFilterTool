@@ -90,7 +90,9 @@
 - (void)popFilterViewWithStartY:(CGFloat)startY startAnimateComplete:(void (^)(void))startAnimateComplete closeAnimateComplete:(void (^)(void))closeAnimateComplete {
     
     [self.baseFilter popFilterViewWithStartY:startY startAnimateComplete:startAnimateComplete closeAnimateComplete:^{
-        closeAnimateComplete();
+        if (closeAnimateComplete) {
+            closeAnimateComplete();
+        }
         //这个很关键，将baseFilter置为nil，因为YYFilterTool对象在静态区，直到程序结束才会释放，如果不将baseFilter置为nil，则baseFilter对象中的所有引用（在堆中）都会一直持有，导致不会被释放，置为nil后，baseFilter才会被销毁
         self.baseFilter = nil;
     }];
