@@ -89,3 +89,14 @@
 * 效果
 
 ![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/5.gif)
+
+### 6、自定义图片
+```objc
+    filterTool.selectedBtnHighlightedName = @"1";//设置选中图片
+    filterTool.selectedBtnNormalName = @"2";//设置没选中图片
+```
+* 效果
+
+![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/6.gif)
+![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/7.gif)
+![图片](https://github.com/WallaceYou/YYFilterTool/blob/master/ShowImage/6.gif)
