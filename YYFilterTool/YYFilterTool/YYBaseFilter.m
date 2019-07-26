@@ -3,7 +3,7 @@
 //  YYBaseFilter
 //
 //  Created by yuyou on 2018/7/28.
-//  Copyright © 2018年 hengtiansoft. All rights reserved.
+//  Copyright © 2018年 yuyou. All rights reserved.
 //
 
 #import "YYBaseFilter.h"
